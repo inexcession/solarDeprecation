@@ -1,5 +1,140 @@
-// State Management
+// Fallback i18n dictionary for offline / direct file preview
+const embeddedI18n = {
+  en: {
+    pageTitle: "Solar Deprecation & Payback Dashboard",
+    defaultSystemName: "Solar + Storage",
+    solarOnlySystemName: "Residential Solar",
+    mainTitle: "Investment Amortization & ROI",
+    mainSubtitle: "Tracking real-world generation, self-consumption savings, and grid offset",
+    solarUnit: "kW Solar",
+    batteryUnit: "kWh Battery",
+    btnParameters: "Parameters",
+    btnLoadCSV: "Load Local CSV",
+    btnExportCSV: "Export Calculated CSV",
+    btnResetDefaults: "Reset to Repo Defaults",
+    btnApplyParameters: "Apply Parameters",
+    metricPaybackProgress: "Payback Progress",
+    metricRemaining: "remaining",
+    metricFullyAmortized: "Fully Amortized!",
+    metricCumulativeReturn: "Cumulative Total Return",
+    metricCumulativeBreakdown: "Self-consumption + Export deposits",
+    metricNetCost: "Net System Cost",
+    metricNetCostBreakdown: "Gross cost minus subsidies",
+    metricProjectedBreakEven: "Projected Break-Even",
+    metricMonthlyPace: "Based on active run-rate",
+    metricAchieved: "Achieved",
+    metricFullyPaid: "System has fully paid for itself",
+    metricPacePrefix: "~",
+    metricPaceMonths: "months at",
+    metricPaceSuffix: "/mo pace",
+    chartAmortizationTitle: "Cumulative Amortization Timeline",
+    chartAmortizationSubtitle: "Cumulative value generated over time versus net investment threshold",
+    chartAmortizationCumulativeLabel: "Cumulative Value Generated",
+    chartAmortizationTargetLabel: "Net Investment Threshold",
+    chartMonthlyTitle: "Monthly Financial Offset",
+    chartMonthlySubtitle: "Self-consumption savings + feed-in deposits vs grid bill",
+    chartMonthlySavingsLabel: "Self-Consumption Savings",
+    chartMonthlyDepositLabel: "Export Deposit",
+    chartMonthlyBillLabel: "Grid Bill Paid",
+    chartEnergyTitle: "Energy Generation & Self-Consumption",
+    chartEnergySubtitle: "Solar generated, self-consumed, and exported (kWh)",
+    chartEnergySelfConsumedLabel: "Self-Consumed (kWh)",
+    chartEnergyExportedLabel: "Exported to Grid (kWh)",
+    chartEnergyImportedLabel: "Imported from Grid (kWh)",
+    tableTitle: "Monthly Ledger",
+    tableSubtitle: "Computed monthly effective rates and derived self-consumption offsets",
+    thMonth: "Month",
+    thGridBill: "Grid Bill",
+    thGridImport: "Grid Import",
+    thEffectiveRate: "Effective Rate",
+    thSolarGen: "Solar Gen",
+    thSelfConsumed: "Self-Consumed",
+    thSavings: "Savings",
+    thExportRevenue: "Export Revenue",
+    thTotalValue: "Total Value",
+    thCumulative: "Cumulative",
+    modalTitle: "System & Calculation Parameters",
+    labelGrossCost: "Gross System Cost (¥)",
+    labelSubsidy: "Subsidies Received (¥)",
+    labelNetCost: "Net Investment (¥)",
+    labelMultiplier: "Daytime Rate Multiplier",
+    tooltipMultiplier: "Adjusts the effective rate for solar hours when daytime tariffs are higher than 24h average. Default 1.15.",
+    labelSolarKw: "Solar Capacity (kW)",
+    labelBatteryKwh: "Battery Capacity (kWh)",
+    labelLanguage: "Language",
+    footerText: "Data synced directly from <code>data/history.csv</code> & <code>data/config.json</code> in repository."
+  },
+  ja: {
+    pageTitle: "太陽光・蓄電池 投資回収・償却ダッシュボード",
+    defaultSystemName: "太陽光発電＋蓄電池",
+    solarOnlySystemName: "住宅用太陽光発電",
+    mainTitle: "設備投資回収・経済効果ダッシュボード",
+    mainSubtitle: "実績データに基づく自家消費削減額・売電収入・投資回収進捗の可視化",
+    solarUnit: "kW 太陽光",
+    batteryUnit: "kWh 蓄電池",
+    btnParameters: "パラメータ設定",
+    btnLoadCSV: "CSV読込",
+    btnExportCSV: "計算結果CSV出力",
+    btnResetDefaults: "初期値に戻す",
+    btnApplyParameters: "設定を適用",
+    metricPaybackProgress: "投資回収進捗",
+    metricRemaining: "残額",
+    metricFullyAmortized: "回収完了！",
+    metricCumulativeReturn: "累積経済効果額",
+    metricCumulativeBreakdown: "自家消費削減額 ＋ 売電振込額",
+    metricNetCost: "実質投資額",
+    metricNetCostBreakdown: "設備総費用（補助金差引後）",
+    metricProjectedBreakEven: "回収完了予測",
+    metricMonthlyPace: "直近の実績ペースに基づく予測",
+    metricAchieved: "回収達成",
+    metricFullyPaid: "設備投資費用を全額回収しました",
+    metricPacePrefix: "月平均 ",
+    metricPaceMonths: " で残り約",
+    metricPaceSuffix: "ヶ月",
+    chartAmortizationTitle: "累積投資回収推移",
+    chartAmortizationSubtitle: "実質投資額に対する累積経済効果の推移（損益分岐ライン）",
+    chartAmortizationCumulativeLabel: "累積経済効果額",
+    chartAmortizationTargetLabel: "実質投資額ライン",
+    chartMonthlyTitle: "月次経済効果内訳",
+    chartMonthlySubtitle: "自家消費による削減額＋売電収入 vs 買電請求額",
+    chartMonthlySavingsLabel: "自家消費削減効果額",
+    chartMonthlyDepositLabel: "売電収入（振込額）",
+    chartMonthlyBillLabel: "買電請求額",
+    chartEnergyTitle: "電力収支バランス（発電・自家消費・買電）",
+    chartEnergySubtitle: "太陽光発電量・自家消費量・売電量・買電量 (kWh)",
+    chartEnergySelfConsumedLabel: "自家消費量 (kWh)",
+    chartEnergyExportedLabel: "売電量 (kWh)",
+    chartEnergyImportedLabel: "買電量 (kWh)",
+    tableTitle: "月次明細一覧",
+    tableSubtitle: "月ごとの実効電気料金単価と算定された自家消費削減効果",
+    thMonth: "年月",
+    thGridBill: "買電請求額",
+    thGridImport: "買電量",
+    thEffectiveRate: "実効単価",
+    thSolarGen: "発電量",
+    thSelfConsumed: "自家消費量",
+    thSavings: "削減効果額",
+    thExportRevenue: "売電収入",
+    thTotalValue: "月次経済効果",
+    thCumulative: "累積回収額",
+    modalTitle: "設備仕様・計算パラメータ設定",
+    labelGrossCost: "設備総費用 (¥)",
+    labelSubsidy: "受給補助金額 (¥)",
+    labelNetCost: "実質投資額 (¥)",
+    labelMultiplier: "昼間単価調整倍率",
+    tooltipMultiplier: "太陽光が発電する日中時間帯の電気料金単価が24時間平均より高い場合の補正倍率（標準: 1.15）",
+    labelSolarKw: "太陽光パネル容量 (kW)",
+    labelBatteryKwh: "蓄電池容量 (kWh)",
+    labelLanguage: "表示言語 (Language)",
+    footerText: "リポジトリの <code>data/history.csv</code> および <code>data/config.json</code> からデータを直接読み込んでいます。"
+  }
+};
+
+let i18n = embeddedI18n;
+let currentLang = 'en';
+
 let appConfig = {
+  language: 'en',
   currency: '¥',
   systemCost: 2800000,
   subsidyReceived: 1200000,
@@ -8,7 +143,7 @@ let appConfig = {
   solarCapacityKw: 6.2,
   batteryCapacityKwh: 9.8,
   daytimeMultiplier: 1.15,
-  systemName: 'Residential Solar + Storage'
+  systemName: ''
 };
 
 let rawHistoryData = [];
@@ -18,14 +153,32 @@ let amortizationChart = null;
 let monthlyValueChart = null;
 let energyFlowChart = null;
 
+function t(key) {
+  const dict = i18n[currentLang] || i18n.en || embeddedI18n.en;
+  return dict[key] || embeddedI18n.en[key] || key;
+}
+
 const fmtCurrency = (val) => `${appConfig.currency}${Math.round(val).toLocaleString()}`;
 const fmtNumber = (val, decimals = 1) => Number(val).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 
 // Initialization
 document.addEventListener('DOMContentLoaded', async () => {
   setupEventListeners();
+  await loadI18n();
   await loadData();
 });
+
+async function loadI18n() {
+  try {
+    const res = await fetch('data/i18n.json');
+    if (res.ok) {
+      const json = await res.json();
+      i18n = json;
+    }
+  } catch (err) {
+    console.warn('Could not load data/i18n.json, using embedded translations', err);
+  }
+}
 
 async function loadData() {
   try {
@@ -38,6 +191,8 @@ async function loadData() {
     console.warn('Could not load config.json, using defaults', err);
   }
 
+  currentLang = appConfig.language || 'en';
+
   try {
     const historyRes = await fetch('data/history.csv');
     if (historyRes.ok) {
@@ -48,8 +203,46 @@ async function loadData() {
     console.warn('Could not load history.csv, please load via file picker', err);
   }
 
+  applyTranslations();
   syncConfigUI();
   recalculateAndRender();
+}
+
+function setLanguage(lang) {
+  currentLang = (lang === 'ja') ? 'ja' : 'en';
+  appConfig.language = currentLang;
+  applyTranslations();
+  syncConfigUI();
+  recalculateAndRender();
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const translation = t(key);
+    if (translation) {
+      if (el.tagName === 'TITLE') {
+        document.title = translation;
+      } else if (key === 'footerText') {
+        el.innerHTML = translation;
+      } else {
+        el.textContent = translation;
+      }
+    }
+  });
+
+  const tooltipEl = document.getElementById('multiplierTooltip');
+  if (tooltipEl) {
+    tooltipEl.setAttribute('title', t('tooltipMultiplier'));
+  }
+
+  // Update active lang button
+  const enBtn = document.getElementById('langEnBtn');
+  const jaBtn = document.getElementById('langJaBtn');
+  if (enBtn && jaBtn) {
+    enBtn.classList.toggle('active', currentLang === 'en');
+    jaBtn.classList.toggle('active', currentLang === 'ja');
+  }
 }
 
 function parseCSV(text) {
@@ -116,12 +309,15 @@ function renderHeaderAndMetrics() {
   const paybackPercent = netInvestment > 0 ? Math.min(100, (totalCumulative / netInvestment) * 100) : 100;
   const remaining = Math.max(0, netInvestment - totalCumulative);
 
-  document.getElementById('systemName').textContent = appConfig.systemName || 'Solar + Storage';
-  const batteryText = appConfig.batteryCapacityKwh ? ` · ${appConfig.batteryCapacityKwh} kWh Battery` : '';
-  document.getElementById('systemSpecs').textContent = `${appConfig.solarCapacityKw || '--'} kW Solar${batteryText}`;
+  let defaultName = appConfig.batteryCapacityKwh ? t('defaultSystemName') : t('solarOnlySystemName');
+  document.getElementById('systemName').textContent = appConfig.systemName || defaultName;
+
+  const solarPart = appConfig.solarCapacityKw ? `${appConfig.solarCapacityKw} ${t('solarUnit')}` : '';
+  const batteryPart = appConfig.batteryCapacityKwh ? ` · ${appConfig.batteryCapacityKwh} ${t('batteryUnit')}` : '';
+  document.getElementById('systemSpecs').textContent = `${solarPart}${batteryPart}`.trim() || '--';
 
   document.getElementById('paybackPercent').textContent = `${paybackPercent.toFixed(1)}%`;
-  document.getElementById('paybackRemaining').textContent = remaining > 0 ? `${fmtCurrency(remaining)} remaining` : 'Fully Amortized!';
+  document.getElementById('paybackRemaining').textContent = remaining > 0 ? `${fmtCurrency(remaining)} ${t('metricRemaining')}` : t('metricFullyAmortized');
   document.getElementById('paybackProgressBar').style.width = `${paybackPercent}%`;
 
   document.getElementById('cumulativeReturn').textContent = fmtCurrency(totalCumulative);
@@ -134,13 +330,19 @@ function renderHeaderAndMetrics() {
     const lastMonthStr = calculatedRows[calculatedRows.length - 1].month;
     const [year, month] = lastMonthStr.split('-').map(Number);
     const targetDate = new Date(year, month - 1 + monthsRemaining);
-    const targetDateStr = targetDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short' });
+    const targetLocale = (currentLang === 'ja') ? 'ja-JP' : undefined;
+    const targetDateStr = targetDate.toLocaleDateString(targetLocale, { year: 'numeric', month: 'short' });
     
     document.getElementById('projectedBreakEven').textContent = targetDateStr;
-    document.getElementById('monthlyPace').textContent = `~${monthsRemaining} months at ${fmtCurrency(avgMonthlyVal)}/mo pace`;
+
+    if (currentLang === 'ja') {
+      document.getElementById('monthlyPace').textContent = `${t('metricPacePrefix')}${fmtCurrency(avgMonthlyVal)}${t('metricPaceMonths')}${monthsRemaining}${t('metricPaceSuffix')}`;
+    } else {
+      document.getElementById('monthlyPace').textContent = `${t('metricPacePrefix')}${monthsRemaining} ${t('metricPaceMonths')} ${fmtCurrency(avgMonthlyVal)}${t('metricPaceSuffix')}`;
+    }
   } else if (remaining === 0) {
-    document.getElementById('projectedBreakEven').textContent = 'Achieved';
-    document.getElementById('monthlyPace').textContent = 'System has fully paid for itself';
+    document.getElementById('projectedBreakEven').textContent = t('metricAchieved');
+    document.getElementById('monthlyPace').textContent = t('metricFullyPaid');
   }
 }
 
@@ -160,7 +362,7 @@ function renderCharts() {
       labels,
       datasets: [
         {
-          label: 'Cumulative Value Generated',
+          label: t('chartAmortizationCumulativeLabel'),
           data: cumulativeVals,
           borderColor: '#10b981',
           backgroundColor: 'rgba(16, 185, 129, 0.15)',
@@ -171,7 +373,7 @@ function renderCharts() {
           pointBackgroundColor: '#10b981'
         },
         {
-          label: 'Net Investment Threshold',
+          label: t('chartAmortizationTargetLabel'),
           data: targetLine,
           borderColor: '#ef4444',
           borderDash: [6, 6],
@@ -185,7 +387,7 @@ function renderCharts() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans' } } },
+        legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans, sans-serif' } } },
         tooltip: {
           callbacks: {
             label: (context) => `${context.dataset.label}: ${fmtCurrency(context.raw)}`
@@ -215,19 +417,19 @@ function renderCharts() {
       labels,
       datasets: [
         {
-          label: 'Self-Consumption Savings',
+          label: t('chartMonthlySavingsLabel'),
           data: calculatedRows.map(r => Math.round(r.selfConsumptionSavings)),
           backgroundColor: '#10b981',
           borderRadius: 4
         },
         {
-          label: 'Export Deposit',
+          label: t('chartMonthlyDepositLabel'),
           data: calculatedRows.map(r => Math.round(r.exportDepositJpy)),
           backgroundColor: '#f59e0b',
           borderRadius: 4
         },
         {
-          label: 'Grid Bill Paid',
+          label: t('chartMonthlyBillLabel'),
           data: calculatedRows.map(r => Math.round(r.billJpy)),
           backgroundColor: '#334155',
           borderRadius: 4
@@ -238,7 +440,7 @@ function renderCharts() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans' } } },
+        legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans, sans-serif' } } },
         tooltip: {
           callbacks: {
             label: (context) => `${context.dataset.label}: ${fmtCurrency(context.raw)}`
@@ -268,19 +470,19 @@ function renderCharts() {
       labels,
       datasets: [
         {
-          label: 'Self-Consumed (kWh)',
+          label: t('chartEnergySelfConsumedLabel'),
           data: calculatedRows.map(r => Math.round(r.selfConsumedKwh)),
           backgroundColor: '#10b981',
           borderRadius: 4
         },
         {
-          label: 'Exported to Grid (kWh)',
+          label: t('chartEnergyExportedLabel'),
           data: calculatedRows.map(r => Math.round(r.solarExportedKwh)),
           backgroundColor: '#f59e0b',
           borderRadius: 4
         },
         {
-          label: 'Imported from Grid (kWh)',
+          label: t('chartEnergyImportedLabel'),
           data: calculatedRows.map(r => Math.round(r.gridImportedKwh)),
           backgroundColor: '#38bdf8',
           borderRadius: 4
@@ -291,7 +493,7 @@ function renderCharts() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans' } } },
+        legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans, sans-serif' } } },
         tooltip: {
           callbacks: {
             label: (context) => `${context.dataset.label}: ${context.raw.toLocaleString()} kWh`
@@ -335,6 +537,12 @@ function renderLedgerTable() {
 }
 
 function setupEventListeners() {
+  // Language Switch Buttons
+  const langEnBtn = document.getElementById('langEnBtn');
+  const langJaBtn = document.getElementById('langJaBtn');
+  if (langEnBtn) langEnBtn.addEventListener('click', () => setLanguage('en'));
+  if (langJaBtn) langJaBtn.addEventListener('click', () => setLanguage('ja'));
+
   // Modal toggle
   const modal = document.getElementById('settingsModal');
   document.getElementById('openSettingsBtn').addEventListener('click', () => {
@@ -352,6 +560,8 @@ function setupEventListeners() {
 
   // Save Settings
   document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+    const selectedLang = document.getElementById('inputLanguage').value;
+    appConfig.language = selectedLang;
     appConfig.systemCost = parseFloat(document.getElementById('inputGrossCost').value) || 0;
     appConfig.subsidyReceived = parseFloat(document.getElementById('inputSubsidy').value) || 0;
     appConfig.netInvestment = parseFloat(document.getElementById('inputNetCost').value) || 0;
@@ -360,7 +570,7 @@ function setupEventListeners() {
     appConfig.batteryCapacityKwh = parseFloat(document.getElementById('inputBatteryKwh').value) || 0;
 
     modal.classList.remove('open');
-    recalculateAndRender();
+    setLanguage(selectedLang);
   });
 
   // Reset to original repo values
@@ -403,6 +613,7 @@ function setupEventListeners() {
 }
 
 function syncConfigUI() {
+  document.getElementById('inputLanguage').value = currentLang || 'en';
   document.getElementById('inputGrossCost').value = appConfig.systemCost || '';
   document.getElementById('inputSubsidy').value = appConfig.subsidyReceived || '';
   document.getElementById('inputNetCost').value = appConfig.netInvestment || (appConfig.systemCost - appConfig.subsidyReceived) || '';

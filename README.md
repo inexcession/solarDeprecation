@@ -1,5 +1,7 @@
 # Solar Deprecation & ROI Calculator
 
+English | [日本語](README.ja.md)
+
 A clean, client-side dashboard to track solar system payback, self-consumption savings, and electricity cost offsets over time.
 
 ## Overview
@@ -14,8 +16,9 @@ Calculates ROI and amortization timeline for residential solar installations (wi
 
 ## Configuration & Data
 
-- `data/config.json`: System cost, battery specifications, installation date, and calculation multipliers.
+- `data/config.json`: Language (`"en"` or `"ja"`), system cost, battery specifications, installation date, and calculation multipliers.
 - `data/history.csv`: Monthly grid imports, electricity bill, solar generation, solar exports, and export deposits.
+- `data/i18n.json`: String definitions for English and Japanese translations.
 
 ## Publishing to GitHub Pages
 
