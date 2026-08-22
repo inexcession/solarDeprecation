@@ -18,6 +18,8 @@ const embeddedI18n = {
     metricNetCostBreakdown: "Gross cost minus subsidies",
     metricProjectedBreakEven: "Projected Break-Even",
     metricMonthlyPace: "Based on active run-rate",
+    metricNetProfit: "Net Profit Generated",
+    metricNetProfitSub: "ROI over net investment",
     metricAchieved: "Achieved",
     metricFullyPaid: "System has fully paid for itself",
     metricPacePrefix: "~",
@@ -69,6 +71,8 @@ const embeddedI18n = {
     metricNetCostBreakdown: "設備総費用（補助金差引後）",
     metricProjectedBreakEven: "回収完了予測",
     metricMonthlyPace: "直近の実績ペースに基づく予測",
+    metricNetProfit: "創出純利益額",
+    metricNetProfitSub: "実質投資額に対するROI",
     metricAchieved: "回収達成",
     metricFullyPaid: "設備投資費用を全額回収しました",
     metricPacePrefix: "月平均 ",
@@ -286,8 +290,16 @@ function renderHeaderAndMetrics() {
   document.getElementById('cumulativeReturn').textContent = fmtCurrency(totalCumulative);
   document.getElementById('netInvestmentDisplay').textContent = fmtCurrency(netInvestment);
 
+  const breakEvenLabelEl = document.getElementById('breakEvenCardLabel');
+  const netProfit = Math.max(0, totalCumulative - netInvestment);
+
   if (calculatedRows.length > 0 && remaining > 0) {
-    const avgMonthlyVal = totalCumulative / calculatedRows.length;
+    if (breakEvenLabelEl) breakEvenLabelEl.textContent = t('metricProjectedBreakEven');
+
+    // Use Trailing 12 Months (TTM) if available, otherwise all recorded months
+    const recentRows = calculatedRows.slice(-12);
+    const recentSum = recentRows.reduce((acc, r) => acc + r.totalMonthlyValue, 0);
+    const avgMonthlyVal = recentRows.length > 0 ? (recentSum / recentRows.length) : 0;
     const monthsRemaining = avgMonthlyVal > 0 ? Math.ceil(remaining / avgMonthlyVal) : 0;
     
     const lastMonthStr = calculatedRows[calculatedRows.length - 1].month;
@@ -304,8 +316,10 @@ function renderHeaderAndMetrics() {
       document.getElementById('monthlyPace').textContent = `${t('metricPacePrefix')}${monthsRemaining} ${t('metricPaceMonths')} ${fmtCurrency(avgMonthlyVal)}${t('metricPaceSuffix')}`;
     }
   } else if (remaining === 0) {
-    document.getElementById('projectedBreakEven').textContent = t('metricAchieved');
-    document.getElementById('monthlyPace').textContent = t('metricFullyPaid');
+    if (breakEvenLabelEl) breakEvenLabelEl.textContent = t('metricNetProfit');
+    const roiPercent = netInvestment > 0 ? ((netProfit / netInvestment) * 100).toFixed(1) : '0.0';
+    document.getElementById('projectedBreakEven').textContent = `+${fmtCurrency(netProfit)}`;
+    document.getElementById('monthlyPace').textContent = `+${roiPercent}% ${t('metricNetProfitSub')}`;
   }
 }
 
