@@ -279,7 +279,8 @@ function renderHeaderAndMetrics() {
 
   const solarPart = appConfig.solarCapacityKw ? `${appConfig.solarCapacityKw} ${t('solarUnit')}` : '';
   const batteryPart = appConfig.batteryCapacityKwh ? ` · ${appConfig.batteryCapacityKwh} ${t('batteryUnit')}` : '';
-  document.getElementById('systemSpecs').textContent = `${solarPart}${batteryPart}`.trim() || '--';
+  const inverterPart = appConfig.inverterCapacityKw ? ` · ${appConfig.inverterCapacityKw} ${t('inverterUnit')}` : '';
+  document.getElementById('systemSpecs').textContent = `${solarPart}${batteryPart}${inverterPart}`.trim() || '--';
 
   document.getElementById('paybackPercent').textContent = `${paybackPercent.toFixed(1)}%`;
   document.getElementById('paybackRemaining').textContent = remaining > 0 ? `${fmtCurrency(remaining)} ${t('metricRemaining')}` : t('metricFullyAmortized');

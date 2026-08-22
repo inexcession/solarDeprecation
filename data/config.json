@@ -5,8 +5,9 @@
   "subsidyReceived": 2106000,
   "netInvestment": 2194000,
   "installationDate": "2026-03-15",
-  "solarCapacityKw": 6.2,
-  "batteryCapacityKwh": 9.8,
+  "solarCapacityKw": 15.0,
+  "batteryCapacityKwh": 13.0,
+  "inverterCapacityKw": 9.9,
   "daytimeMultiplier": 1.15,
   "systemName": ""
 }
