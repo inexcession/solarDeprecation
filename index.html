@@ -25,22 +25,6 @@
             <span class="lang-divider">/</span>
             <button class="lang-btn" id="langJaBtn" data-lang="ja">日本語</button>
           </div>
-          <button class="btn btn-secondary" id="openSettingsBtn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            <span data-i18n="btnParameters">Parameters</span>
-          </button>
-          <label class="btn btn-secondary file-upload-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
-            <span data-i18n="btnLoadCSV">Load Local CSV</span>
-            <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
-          </label>
         </div>
       </div>
     </header>
@@ -147,56 +131,6 @@
         </table>
       </div>
     </section>
-
-    <!-- Parameters Modal -->
-    <div class="modal-overlay" id="settingsModal">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h3 data-i18n="modalTitle">System & Calculation Parameters</h3>
-          <button class="close-btn" id="closeSettingsBtn">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="inputLanguage" data-i18n="labelLanguage">Language</label>
-            <select id="inputLanguage" class="form-select">
-              <option value="en">English (EN)</option>
-              <option value="ja">日本語 (Japanese)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="inputGrossCost" data-i18n="labelGrossCost">Gross System Cost (¥)</label>
-            <input type="number" id="inputGrossCost" step="10000">
-          </div>
-          <div class="form-group">
-            <label for="inputSubsidy" data-i18n="labelSubsidy">Subsidies Received (¥)</label>
-            <input type="number" id="inputSubsidy" step="10000">
-          </div>
-          <div class="form-group">
-            <label for="inputNetCost" data-i18n="labelNetCost">Net Investment (¥)</label>
-            <input type="number" id="inputNetCost" step="10000">
-          </div>
-          <div class="form-group">
-            <label for="inputMultiplier">
-              <span data-i18n="labelMultiplier">Daytime Rate Multiplier</span>
-              <span class="tooltip-icon" id="multiplierTooltip" title="Adjusts the effective rate for solar hours when daytime tariffs are higher than 24h average. Default 1.15.">?</span>
-            </label>
-            <input type="number" id="inputMultiplier" step="0.05" min="0.5" max="2.5">
-          </div>
-          <div class="form-group">
-            <label for="inputSolarKw" data-i18n="labelSolarKw">Solar Capacity (kW)</label>
-            <input type="number" id="inputSolarKw" step="0.1">
-          </div>
-          <div class="form-group">
-            <label for="inputBatteryKwh" data-i18n="labelBatteryKwh">Battery Capacity (kWh)</label>
-            <input type="number" id="inputBatteryKwh" step="0.1">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-ghost" id="resetConfigBtn" data-i18n="btnResetDefaults">Reset to Repo Defaults</button>
-          <button class="btn btn-primary" id="saveSettingsBtn" data-i18n="btnApplyParameters">Apply Parameters</button>
-        </div>
-      </div>
-    </div>
 
     <footer class="dashboard-footer">
       <p id="footerParagraph" data-i18n="footerText">Data synced directly from <code>data/history.csv</code> & <code>data/config.json</code> in repository.</p>

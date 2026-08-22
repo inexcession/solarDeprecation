@@ -8,11 +8,7 @@ const embeddedI18n = {
     mainSubtitle: "Tracking real-world generation, self-consumption savings, and grid offset",
     solarUnit: "kW Solar",
     batteryUnit: "kWh Battery",
-    btnParameters: "Parameters",
-    btnLoadCSV: "Load Local CSV",
     btnExportCSV: "Export Calculated CSV",
-    btnResetDefaults: "Reset to Repo Defaults",
-    btnApplyParameters: "Apply Parameters",
     metricPaybackProgress: "Payback Progress",
     metricRemaining: "remaining",
     metricFullyAmortized: "Fully Amortized!",
@@ -53,15 +49,6 @@ const embeddedI18n = {
     thExportRevenue: "Export Revenue",
     thTotalValue: "Total Value",
     thCumulative: "Cumulative",
-    modalTitle: "System & Calculation Parameters",
-    labelGrossCost: "Gross System Cost (¥)",
-    labelSubsidy: "Subsidies Received (¥)",
-    labelNetCost: "Net Investment (¥)",
-    labelMultiplier: "Daytime Rate Multiplier",
-    tooltipMultiplier: "Adjusts the effective rate for solar hours when daytime tariffs are higher than 24h average. Default 1.15.",
-    labelSolarKw: "Solar Capacity (kW)",
-    labelBatteryKwh: "Battery Capacity (kWh)",
-    labelLanguage: "Language",
     footerText: "Data synced directly from <code>data/history.csv</code> & <code>data/config.json</code> in repository."
   },
   ja: {
@@ -72,11 +59,7 @@ const embeddedI18n = {
     mainSubtitle: "実績データに基づく自家消費削減額・売電収入・投資回収進捗の可視化",
     solarUnit: "kW 太陽光",
     batteryUnit: "kWh 蓄電池",
-    btnParameters: "パラメータ設定",
-    btnLoadCSV: "CSV読込",
     btnExportCSV: "計算結果CSV出力",
-    btnResetDefaults: "初期値に戻す",
-    btnApplyParameters: "設定を適用",
     metricPaybackProgress: "投資回収進捗",
     metricRemaining: "残額",
     metricFullyAmortized: "回収完了！",
@@ -117,15 +100,6 @@ const embeddedI18n = {
     thExportRevenue: "売電収入",
     thTotalValue: "月次経済効果",
     thCumulative: "累積回収額",
-    modalTitle: "設備仕様・計算パラメータ設定",
-    labelGrossCost: "設備総費用 (¥)",
-    labelSubsidy: "受給補助金額 (¥)",
-    labelNetCost: "実質投資額 (¥)",
-    labelMultiplier: "昼間単価調整倍率",
-    tooltipMultiplier: "太陽光が発電する日中時間帯の電気料金単価が24時間平均より高い場合の補正倍率（標準: 1.15）",
-    labelSolarKw: "太陽光パネル容量 (kW)",
-    labelBatteryKwh: "蓄電池容量 (kWh)",
-    labelLanguage: "表示言語 (Language)",
     footerText: "リポジトリの <code>data/history.csv</code> および <code>data/config.json</code> からデータを直接読み込んでいます。"
   }
 };
@@ -200,19 +174,16 @@ async function loadData() {
       rawHistoryData = parseCSV(csvText);
     }
   } catch (err) {
-    console.warn('Could not load history.csv, please load via file picker', err);
+    console.warn('Could not load history.csv', err);
   }
 
   applyTranslations();
-  syncConfigUI();
   recalculateAndRender();
 }
 
 function setLanguage(lang) {
   currentLang = (lang === 'ja') ? 'ja' : 'en';
-  appConfig.language = currentLang;
   applyTranslations();
-  syncConfigUI();
   recalculateAndRender();
 }
 
@@ -231,12 +202,6 @@ function applyTranslations() {
     }
   });
 
-  const tooltipEl = document.getElementById('multiplierTooltip');
-  if (tooltipEl) {
-    tooltipEl.setAttribute('title', t('tooltipMultiplier'));
-  }
-
-  // Update active lang button
   const enBtn = document.getElementById('langEnBtn');
   const jaBtn = document.getElementById('langJaBtn');
   if (enBtn && jaBtn) {
@@ -543,55 +508,6 @@ function setupEventListeners() {
   if (langEnBtn) langEnBtn.addEventListener('click', () => setLanguage('en'));
   if (langJaBtn) langJaBtn.addEventListener('click', () => setLanguage('ja'));
 
-  // Modal toggle
-  const modal = document.getElementById('settingsModal');
-  document.getElementById('openSettingsBtn').addEventListener('click', () => {
-    syncConfigUI();
-    modal.classList.add('open');
-  });
-
-  document.getElementById('closeSettingsBtn').addEventListener('click', () => {
-    modal.classList.remove('open');
-  });
-
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.remove('open');
-  });
-
-  // Save Settings
-  document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-    const selectedLang = document.getElementById('inputLanguage').value;
-    appConfig.language = selectedLang;
-    appConfig.systemCost = parseFloat(document.getElementById('inputGrossCost').value) || 0;
-    appConfig.subsidyReceived = parseFloat(document.getElementById('inputSubsidy').value) || 0;
-    appConfig.netInvestment = parseFloat(document.getElementById('inputNetCost').value) || 0;
-    appConfig.daytimeMultiplier = parseFloat(document.getElementById('inputMultiplier').value) || 1.0;
-    appConfig.solarCapacityKw = parseFloat(document.getElementById('inputSolarKw').value) || 0;
-    appConfig.batteryCapacityKwh = parseFloat(document.getElementById('inputBatteryKwh').value) || 0;
-
-    modal.classList.remove('open');
-    setLanguage(selectedLang);
-  });
-
-  // Reset to original repo values
-  document.getElementById('resetConfigBtn').addEventListener('click', async () => {
-    await loadData();
-    modal.classList.remove('open');
-  });
-
-  // Local CSV Upload
-  document.getElementById('csvFileInput').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      rawHistoryData = parseCSV(event.target.result);
-      recalculateAndRender();
-    };
-    reader.readAsText(file);
-  });
-
   // Export Calculated CSV
   document.getElementById('exportCalculationsBtn').addEventListener('click', () => {
     if (!calculatedRows.length) return;
@@ -610,14 +526,4 @@ function setupEventListeners() {
     link.click();
     document.body.removeChild(link);
   });
-}
-
-function syncConfigUI() {
-  document.getElementById('inputLanguage').value = currentLang || 'en';
-  document.getElementById('inputGrossCost').value = appConfig.systemCost || '';
-  document.getElementById('inputSubsidy').value = appConfig.subsidyReceived || '';
-  document.getElementById('inputNetCost').value = appConfig.netInvestment || (appConfig.systemCost - appConfig.subsidyReceived) || '';
-  document.getElementById('inputMultiplier').value = appConfig.daytimeMultiplier || 1.15;
-  document.getElementById('inputSolarKw').value = appConfig.solarCapacityKw || '';
-  document.getElementById('inputBatteryKwh').value = appConfig.batteryCapacityKwh || '';
 }
