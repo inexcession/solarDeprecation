@@ -42,7 +42,7 @@ const embeddedI18n = {
     thMonth: "Month",
     thGridBill: "Grid Bill",
     thGridImport: "Grid Import",
-    thEffectiveRate: "Effective Rate",
+    thDaytimeRate: "Assumed Day Rate",
     thSolarGen: "Solar Gen",
     thSelfConsumed: "Self-Consumed",
     thSavings: "Savings",
@@ -89,11 +89,11 @@ const embeddedI18n = {
     chartEnergyExportedLabel: "売電量 (kWh)",
     chartEnergyImportedLabel: "買電量 (kWh)",
     tableTitle: "月次明細一覧",
-    tableSubtitle: "月ごとの実効電気料金単価と算定された自家消費削減効果",
+    tableSubtitle: "設定された想定昼間単価に基づく自家消費による経済効果",
     thMonth: "年月",
     thGridBill: "買電請求額",
     thGridImport: "買電量",
-    thEffectiveRate: "実効単価",
+    thDaytimeRate: "想定昼間単価",
     thSolarGen: "発電量",
     thSelfConsumed: "自家消費量",
     thSavings: "削減効果額",
@@ -232,7 +232,8 @@ function parseCSV(text) {
       billJpy: parseFloat(row.bill_jpy) || 0,
       solarGeneratedKwh: parseFloat(row.solar_generated_kwh) || 0,
       solarExportedKwh: parseFloat(row.solar_exported_kwh) || 0,
-      exportDepositJpy: parseFloat(row.export_deposit_jpy) || 0
+      exportDepositJpy: parseFloat(row.export_deposit_jpy) || 0,
+      assumedDayRateJpy: parseFloat(row.assumed_day_rate_jpy) || 35.0
     });
   }
 
@@ -244,19 +245,15 @@ function recalculateAndRender() {
 
   let cumulativeVal = 0;
   calculatedRows = rawHistoryData.map(row => {
-    const effectiveRate = row.gridImportedKwh > 0 ? (row.billJpy / row.gridImportedKwh) : 32.0;
     const selfConsumedKwh = Math.max(0, row.solarGeneratedKwh - row.solarExportedKwh);
-    const daytimeRate = effectiveRate * (appConfig.daytimeMultiplier || 1.0);
-    const selfConsumptionSavings = selfConsumedKwh * daytimeRate;
+    const selfConsumptionSavings = selfConsumedKwh * row.assumedDayRateJpy;
     const totalMonthlyValue = selfConsumptionSavings + row.exportDepositJpy;
     
     cumulativeVal += totalMonthlyValue;
 
     return {
       ...row,
-      effectiveRate,
       selfConsumedKwh,
-      daytimeRate,
       selfConsumptionSavings,
       totalMonthlyValue,
       cumulativeValue: cumulativeVal
@@ -490,7 +487,7 @@ function renderLedgerTable() {
       <td>${row.month}</td>
       <td>${fmtCurrency(row.billJpy)}</td>
       <td>${fmtNumber(row.gridImportedKwh, 0)} kWh</td>
-      <td>${fmtCurrency(row.effectiveRate)}/kWh</td>
+      <td>${fmtCurrency(row.assumedDayRateJpy)}/kWh</td>
       <td>${fmtNumber(row.solarGeneratedKwh, 0)} kWh</td>
       <td>${fmtNumber(row.selfConsumedKwh, 0)} kWh</td>
       <td class="highlight-positive">${fmtCurrency(row.selfConsumptionSavings)}</td>
@@ -513,9 +510,9 @@ function setupEventListeners() {
   document.getElementById('exportCalculationsBtn').addEventListener('click', () => {
     if (!calculatedRows.length) return;
 
-    let csvContent = 'month,grid_bill_jpy,grid_import_kwh,effective_rate,solar_generated_kwh,self_consumed_kwh,self_consumption_savings_jpy,export_revenue_jpy,total_monthly_value_jpy,cumulative_value_jpy\n';
+    let csvContent = 'month,grid_bill_jpy,grid_import_kwh,assumed_day_rate_jpy,solar_generated_kwh,self_consumed_kwh,self_consumption_savings_jpy,export_revenue_jpy,total_monthly_value_jpy,cumulative_value_jpy\n';
     calculatedRows.forEach(r => {
-      csvContent += `${r.month},${r.billJpy},${r.gridImportedKwh},${r.effectiveRate.toFixed(2)},${r.solarGeneratedKwh},${r.selfConsumedKwh.toFixed(1)},${Math.round(r.selfConsumptionSavings)},${r.exportDepositJpy},${Math.round(r.totalMonthlyValue)},${Math.round(r.cumulativeValue)}\n`;
+      csvContent += `${r.month},${r.billJpy},${r.gridImportedKwh},${r.assumedDayRateJpy.toFixed(2)},${r.solarGeneratedKwh},${r.selfConsumedKwh.toFixed(1)},${Math.round(r.selfConsumptionSavings)},${r.exportDepositJpy},${Math.round(r.totalMonthlyValue)},${Math.round(r.cumulativeValue)}\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });

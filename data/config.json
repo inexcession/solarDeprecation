@@ -8,6 +8,5 @@
   "solarCapacityKw": 15.0,
   "batteryCapacityKwh": 13.0,
   "inverterCapacityKw": 9.9,
-  "daytimeMultiplier": 1.15,
   "systemName": ""
 }

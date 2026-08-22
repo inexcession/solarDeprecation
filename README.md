@@ -8,7 +8,7 @@ A clean, client-side dashboard to track solar system payback, self-consumption s
 
 Calculates ROI and amortization timeline for residential solar installations (with or without batteries) using real electricity bill history and solar generation data.
 
-- **Self-Consumption Savings:** Uses the effective monthly electricity rate (`Total Bill / Total Imported kWh`) to calculate monetary savings from avoided grid purchases.
+- **Self-Consumption Savings:** Uses a historical per-month configured replacement rate (`assumed_day_rate_jpy`) to calculate monetary savings from avoided daytime grid purchases, avoiding the mathematical distortions of fixed base fees.
 - **Export Revenue:** Direct tracking of periodic utility feed-in deposits.
 - **Payback & Amortization Tracking:** Shows cumulative return against net initial capital investment.
 
@@ -27,7 +27,8 @@ If you want to track your own installation, fork or clone this repository to you
    - Choose your default language (`"en"` or `"ja"`).
 3. **Add Your Data (`data/history.csv`):**
    - Fill in your monthly billing and generation history.
-   - Columns: `month,grid_imported_kwh,bill_jpy,solar_generated_kwh,solar_exported_kwh,export_deposit_jpy`.
+   - Columns: `month,grid_imported_kwh,bill_jpy,solar_generated_kwh,solar_exported_kwh,export_deposit_jpy,assumed_day_rate_jpy`.
+   - *Tip on `assumed_day_rate_jpy`:* This is the price per kWh you would have paid to buy daytime electricity from the grid. Set it to your utility's daytime tier (e.g. `35.0` JPY/kWh) to accurately value your self-consumption without being distorted by fixed monthly base fees.
    - *Note on Utility Billing Periods (e.g., TEPCO):* Power bills often state a month (e.g., "April") when the actual meter reading period was the preceding month (e.g., March 2 to April 1). Align your rows consistently so that your solar generation figures match the corresponding electricity usage period.
 4. **Publish via GitHub Pages:**
    - In your forked repository, go to **Settings** -> **Pages**.
