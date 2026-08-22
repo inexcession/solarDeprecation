@@ -8,20 +8,37 @@ A clean, client-side dashboard to track solar system payback, self-consumption s
 
 Calculates ROI and amortization timeline for residential solar installations (with or without batteries) using real electricity bill history and solar generation data.
 
-> **Note for Solar-Only Setups:** If your system does not include a battery, simply set `"batteryCapacityKwh": 0` (or remove the field) in `data/config.json`. The dashboard will automatically adjust the UI and the math perfectly handles solar-only self-consumption.
-
 - **Self-Consumption Savings:** Uses the effective monthly electricity rate (`Total Bill / Total Imported kWh`) to calculate monetary savings from avoided grid purchases.
 - **Export Revenue:** Direct tracking of periodic utility feed-in deposits.
 - **Payback & Amortization Tracking:** Shows cumulative return against net initial capital investment.
 
-## Configuration & Data
+> **Note for Solar-Only Setups:** If your system does not include a battery, simply set `"batteryCapacityKwh": 0` (or remove the field) in `data/config.json`. The dashboard will automatically adjust the UI and the math handles solar-only self-consumption.
 
-- `data/config.json`: Language (`"en"` or `"ja"`), system cost, battery specifications, installation date, and calculation multipliers.
-- `data/history.csv`: Monthly grid imports, electricity bill, solar generation, solar exports, and export deposits.
+---
+
+## How to Use This for Your Own Solar System
+
+If you want to track your own installation, fork or clone this repository to your own GitHub account:
+
+1. **Fork the Repository:** Click the **Fork** button at the top right of this repository to create your own copy.
+2. **Update Configuration (`data/config.json`):**
+   - Set your gross system cost, subsidies received, and net investment.
+   - Set your system capacities (`solarCapacityKw`, `batteryCapacityKwh`).
+   - Choose your default language (`"en"` or `"ja"`).
+3. **Add Your Data (`data/history.csv`):**
+   - Fill in your monthly billing and generation history.
+   - Columns: `month,grid_imported_kwh,bill_jpy,solar_generated_kwh,solar_exported_kwh,export_deposit_jpy`.
+4. **Publish via GitHub Pages:**
+   - In your forked repository, go to **Settings** -> **Pages**.
+   - Under **Build and deployment > Source**, select **Deploy from a branch**.
+   - Select branch `main` and folder `/ (root)`, then click **Save**.
+   - Your private, personalized dashboard will be live at `https://<your-username>.github.io/<repo-name>/`.
+
+---
+
+## Repository Structure
+
+- `data/config.json`: System specifications, language, and calculation multipliers.
+- `data/history.csv`: Monthly records for grid import, bills, solar generation, and export deposits.
 - `data/i18n.json`: String definitions for English and Japanese translations.
-
-## Publishing to GitHub Pages
-
-1. Go to repository **Settings** -> **Pages**.
-2. Under **Build and deployment**, select **Source** as **Deploy from a branch**.
-3. Choose branch `main` and folder `/ (root)`.
+- `index.html`, `style.css`, `app.js`: Client-side dashboard application.

@@ -14,14 +14,31 @@
 
 > **太陽光発電のみ（蓄電池なし）の場合:** 蓄電池を設置していない場合は、`data/config.json` の `"batteryCapacityKwh"` を `0`（または項目削除）に設定してください。UIが自動で最適化され、太陽光単体の自家消費効果が正しく計算されます。
 
-## 設定とデータ形式
+---
 
-- `data/config.json`: 言語設定（`"language": "ja"` または `"en"`）、設備費用、補助金受給額、実質投資額、パネル・蓄電池容量、昼間単価補正倍率。
-- `data/history.csv`: 月次の買電電力量、電気料金請求額、発電量、売電量、売電振込額。
+## ご自身の太陽光設備で利用する場合（Fork手順）
+
+本ツールをご自身の設備実績で利用したい場合は、本リポジトリに直接データを追加するのではなく、ご自身のアカウントへ **Fork（複製）** してご利用ください。
+
+1. **リポジトリを Fork:** 画面右上の **Fork** ボタンをクリックし、ご自身の GitHub アカウントにリポジトリを複製します。
+2. **設定ファイルの編集 (`data/config.json`):**
+   - 設備総費用、受給補助金額、実質投資額を入力します。
+   - 設備容量（`solarCapacityKw`, `batteryCapacityKwh`）を入力します。
+   - 表示言語（`"ja"` または `"en"`）を選択します。
+3. **実績データの入力 (`data/history.csv`):**
+   - 毎月の買電量・電気料金請求額・発電量・売電量・売電振込額を入力します。
+   - カラム構成: `month,grid_imported_kwh,bill_jpy,solar_generated_kwh,solar_exported_kwh,export_deposit_jpy`
+4. **GitHub Pages で公開:**
+   - 複製したご自身のリポジトリの **Settings** -> **Pages** を開きます。
+   - **Build and deployment > Source** で **Deploy from a branch** を選択します。
+   - ブランチに `main`、フォルダに `/ (root)` を指定して **Save** をクリックします。
+   - `https://<ご自身のアカウント名>.github.io/<リポジトリ名>/` にて専用のダッシュボードが公開されます。
+
+---
+
+## ディレクトリ構成
+
+- `data/config.json`: 設備仕様、言語設定、計算パラメータ。
+- `data/history.csv`: 月次の買電・請求額・発電・売電振込履歴データ。
 - `data/i18n.json`: 日本語および英語の文言辞書。
-
-## GitHub Pages での公開手順
-
-1. リポジトリの **Settings** -> **Pages** を開きます。
-2. **Build and deployment** の **Source** で **Deploy from a branch** を選択します。
-3. ブランチに `main`、フォルダに `/ (root)` を指定して **Save** をクリックします。
+- `index.html`, `style.css`, `app.js`: ダッシュボード本体（Webアプリケーション）。
