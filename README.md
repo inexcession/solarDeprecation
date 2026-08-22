@@ -4,7 +4,9 @@ A clean, client-side dashboard to track solar system payback, self-consumption s
 
 ## Overview
 
-Calculates ROI and amortization timeline for residential solar and battery installations using real electricity bill history and solar generation data.
+Calculates ROI and amortization timeline for residential solar installations (with or without batteries) using real electricity bill history and solar generation data.
+
+> **Note for Solar-Only Setups:** If your system does not include a battery, simply set `"batteryCapacityKwh": 0` (or remove the field) in `data/config.json`. The dashboard will automatically adjust the UI and the math perfectly handles solar-only self-consumption.
 
 - **Self-Consumption Savings:** Uses the effective monthly electricity rate (`Total Bill / Total Imported kWh`) to calculate monetary savings from avoided grid purchases.
 - **Export Revenue:** Direct tracking of periodic utility feed-in deposits.
