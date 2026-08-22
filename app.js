@@ -117,7 +117,8 @@ function renderHeaderAndMetrics() {
   const remaining = Math.max(0, netInvestment - totalCumulative);
 
   document.getElementById('systemName').textContent = appConfig.systemName || 'Solar + Storage';
-  document.getElementById('systemSpecs').textContent = `${appConfig.solarCapacityKw || '--'} kW Solar · ${appConfig.batteryCapacityKwh || '--'} kWh Battery`;
+  const batteryText = appConfig.batteryCapacityKwh ? ` · ${appConfig.batteryCapacityKwh} kWh Battery` : '';
+  document.getElementById('systemSpecs').textContent = `${appConfig.solarCapacityKw || '--'} kW Solar${batteryText}`;
 
   document.getElementById('paybackPercent').textContent = `${paybackPercent.toFixed(1)}%`;
   document.getElementById('paybackRemaining').textContent = remaining > 0 ? `${fmtCurrency(remaining)} remaining` : 'Fully Amortized!';
