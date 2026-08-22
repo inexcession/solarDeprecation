@@ -28,6 +28,7 @@
 3. **実績データの入力 (`data/history.csv`):**
    - 毎月の買電量・電気料金請求額・発電量・売電量・売電振込額を入力します。
    - カラム構成: `month,grid_imported_kwh,bill_jpy,solar_generated_kwh,solar_exported_kwh,export_deposit_jpy`
+   - *※電力会社（TEPCO等）の検針期間に関する注意:* 「4月分請求」と記載されていても実際の検針期間は「3月2日〜4月1日」のように前月期間であることが一般的です。太陽光発電実績データとの対応関係（検針期間に合わせるかカレンダー月に合わせるか）を統一してご入力ください。
 4. **GitHub Pages で公開:**
    - 複製したご自身のリポジトリの **Settings** -> **Pages** を開きます。
    - **Build and deployment > Source** で **Deploy from a branch** を選択します。

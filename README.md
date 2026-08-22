@@ -28,6 +28,7 @@ If you want to track your own installation, fork or clone this repository to you
 3. **Add Your Data (`data/history.csv`):**
    - Fill in your monthly billing and generation history.
    - Columns: `month,grid_imported_kwh,bill_jpy,solar_generated_kwh,solar_exported_kwh,export_deposit_jpy`.
+   - *Note on Utility Billing Periods (e.g., TEPCO):* Power bills often state a month (e.g., "April") when the actual meter reading period was the preceding month (e.g., March 2 to April 1). Align your rows consistently so that your solar generation figures match the corresponding electricity usage period.
 4. **Publish via GitHub Pages:**
    - In your forked repository, go to **Settings** -> **Pages**.
    - Under **Build and deployment > Source**, select **Deploy from a branch**.
