@@ -16,6 +16,50 @@ Calculates ROI and amortization timeline for residential solar installations (wi
 
 ---
 
+## Calculation Methodology
+
+The dashboard uses the following formulas for its monthly and cumulative calculations:
+
+### 1. Net Capital Investment
+```
+Net Investment = System Cost - Subsidies Received
+```
+This is the baseline investment threshold the system needs to recover.
+
+### 2. Self-Consumed Solar Energy (kWh)
+```
+Self-Consumed (kWh) = max(0, Solar Generated kWh - Solar Exported kWh)
+```
+Solar energy not exported to the grid is consumed directly by the home or stored in the battery for nighttime use.
+
+### 3. Monthly Self-Consumption Savings (¥)
+```
+Monthly Savings (¥) = Self-Consumed (kWh) * Assumed Day Rate (¥/kWh)
+```
+Instead of dividing distorted utility bills by tiny grid imports, each month's self-consumed energy is multiplied by the daytime replacement rate (`assumed_day_rate_jpy`) for that specific month.
+
+### 4. Total Monthly Economic Value (¥)
+```
+Total Monthly Value (¥) = Monthly Savings (¥) + Export Deposit (¥)
+```
+Combines bill reductions from self-consumption with actual cash deposits received from exported electricity.
+
+### 5. Cumulative Return & Payback Progress
+```
+Cumulative Value = Sum of Total Monthly Values to date
+Payback Progress (%) = min(100%, (Cumulative Value / Net Investment) * 100)
+Remaining Balance (¥) = max(0, Net Investment - Cumulative Value)
+```
+
+### 6. Projected Break-Even Date
+```
+Average Monthly Value = Cumulative Value / Number of Recorded Months
+Months Remaining = ceil(Remaining Balance / Average Monthly Value)
+Projected Date = Latest Recorded Month + Months Remaining
+```
+
+---
+
 ## How to Use This for Your Own Solar System
 
 If you want to track your own installation, fork or clone this repository to your own GitHub account:
@@ -23,7 +67,7 @@ If you want to track your own installation, fork or clone this repository to you
 1. **Fork the Repository:** Click the **Fork** button at the top right of this repository to create your own copy.
 2. **Update Configuration (`data/config.json`):**
    - Set your gross system cost, subsidies received, and net investment.
-   - Set your system capacities (`solarCapacityKw`, `batteryCapacityKwh`).
+   - Set your system capacities (`solarCapacityKw`, `batteryCapacityKwh`, `inverterCapacityKw`).
    - Choose your default language (`"en"` or `"ja"`).
 3. **Add Your Data (`data/history.csv`):**
    - Fill in your monthly billing and generation history.
@@ -40,7 +84,7 @@ If you want to track your own installation, fork or clone this repository to you
 
 ## Repository Structure
 
-- `data/config.json`: System specifications, language, and calculation multipliers.
-- `data/history.csv`: Monthly records for grid import, bills, solar generation, and export deposits.
+- `data/config.json`: System specifications, initial costs, subsidies, and language setting.
+- `data/history.csv`: Monthly ledger containing grid import, bills, solar generation, export kWh, export deposits, and daytime rates.
 - `data/i18n.json`: String definitions for English and Japanese translations.
 - `index.html`, `style.css`, `app.js`: Client-side dashboard application.
