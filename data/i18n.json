@@ -51,6 +51,12 @@
     "thExportRevenue": "Export Revenue",
     "thTotalValue": "Total Value",
     "thCumulative": "Cumulative",
+    "warnGenCapacity": "Solar generation ({val} kWh) exceeds typical maximum (~{max} kWh) for a {cap} kW system.",
+    "warnHighRate": "Implied electricity rate ({rate}/kWh) is unusually high. Check bill amount or grid import kWh.",
+    "warnLowRate": "Implied electricity rate ({rate}/kWh) is unusually low. Check bill amount or grid import kWh.",
+    "warnExportExceedsGen": "Exported energy ({exp} kWh) exceeds total generation ({gen} kWh).",
+    "warnDayRateRange": "Assumed daytime rate ({rate}/kWh) is outside expected range.",
+    "noDataFound": "No valid monthly records found in data/history.csv.",
     "footerText": "Data synced directly from <code>data/history.csv</code> & <code>data/config.json</code> in repository."
   },
   "ja": {
@@ -105,6 +111,12 @@
     "thExportRevenue": "売電収入",
     "thTotalValue": "月次経済効果",
     "thCumulative": "累積回収額",
+    "warnGenCapacity": "発電量（{val} kWh）が{cap} kWシステムの理論最大値（約{max} kWh）を超過しています。",
+    "warnHighRate": "実効電気料金単価（{rate}/kWh）が異常に高額です。請求額や買電量をご確認ください。",
+    "warnLowRate": "実効電気料金単価（{rate}/kWh）が異常に低額です。請求額や買電量をご確認ください。",
+    "warnExportExceedsGen": "売電量（{exp} kWh）が総発電量（{gen} kWh）を上回っています。",
+    "warnDayRateRange": "想定昼間単価（{rate}/kWh）が標準範囲外です。",
+    "noDataFound": "data/history.csv に有効な月次データが見つかりません。",
     "footerText": "リポジトリの <code>data/history.csv</code> および <code>data/config.json</code> からデータを直接読み込んでいます。"
   }
 }

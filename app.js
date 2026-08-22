@@ -8,6 +8,7 @@ const embeddedI18n = {
     mainSubtitle: "Tracking real-world generation, self-consumption savings, and grid offset",
     solarUnit: "kW Solar",
     batteryUnit: "kWh Battery",
+    inverterUnit: "kW Inverter",
     btnExportCSV: "Export Calculated CSV",
     metricPaybackProgress: "Payback Progress",
     metricRemaining: "remaining",
@@ -51,6 +52,12 @@ const embeddedI18n = {
     thExportRevenue: "Export Revenue",
     thTotalValue: "Total Value",
     thCumulative: "Cumulative",
+    warnGenCapacity: "Solar generation ({val} kWh) exceeds typical maximum (~{max} kWh) for a {cap} kW system.",
+    warnHighRate: "Implied electricity rate ({rate}/kWh) is unusually high. Check bill amount or grid import kWh.",
+    warnLowRate: "Implied electricity rate ({rate}/kWh) is unusually low. Check bill amount or grid import kWh.",
+    warnExportExceedsGen: "Exported energy ({exp} kWh) exceeds total generation ({gen} kWh).",
+    warnDayRateRange: "Assumed daytime rate ({rate}/kWh) is outside expected range.",
+    noDataFound: "No valid monthly records found in data/history.csv.",
     footerText: "Data synced directly from <code>data/history.csv</code> & <code>data/config.json</code> in repository."
   },
   ja: {
@@ -61,6 +68,7 @@ const embeddedI18n = {
     mainSubtitle: "実績データに基づく自家消費削減額・売電収入・投資回収進捗の可視化",
     solarUnit: "kW 太陽光",
     batteryUnit: "kWh 蓄電池",
+    inverterUnit: "kW パワコン",
     btnExportCSV: "計算結果CSV出力",
     metricPaybackProgress: "投資回収進捗",
     metricRemaining: "残額",
@@ -104,6 +112,12 @@ const embeddedI18n = {
     thExportRevenue: "売電収入",
     thTotalValue: "月次経済効果",
     thCumulative: "累積回収額",
+    warnGenCapacity: "発電量（{val} kWh）が{cap} kWシステムの理論最大値（約{max} kWh）を超過しています。",
+    warnHighRate: "実効電気料金単価（{rate}/kWh）が異常に高額です。請求額や買電量をご確認ください。",
+    warnLowRate: "実効電気料金単価（{rate}/kWh）が異常に低額です。請求額や買電量をご確認ください。",
+    warnExportExceedsGen: "売電量（{exp} kWh）が総発電量（{gen} kWh）を上回っています。",
+    warnDayRateRange: "想定昼間単価（{rate}/kWh）が標準範囲外です。",
+    noDataFound: "data/history.csv に有効な月次データが見つかりません。",
     footerText: "リポジトリの <code>data/history.csv</code> および <code>data/config.json</code> からデータを直接読み込んでいます。"
   }
 };
@@ -114,13 +128,13 @@ let currentLang = 'en';
 let appConfig = {
   language: 'en',
   currency: '¥',
-  systemCost: 2800000,
-  subsidyReceived: 1200000,
-  netInvestment: 1600000,
-  installationDate: '2023-06-01',
-  solarCapacityKw: 6.2,
-  batteryCapacityKwh: 9.8,
-  daytimeMultiplier: 1.15,
+  systemCost: 4300000,
+  subsidyReceived: 2106000,
+  netInvestment: 2194000,
+  installationDate: '2026-03-15',
+  solarCapacityKw: 15.0,
+  batteryCapacityKwh: 13.0,
+  inverterCapacityKw: 9.9,
   systemName: ''
 };
 
@@ -138,6 +152,29 @@ function t(key) {
 
 const fmtCurrency = (val) => `${appConfig.currency}${Math.round(val).toLocaleString()}`;
 const fmtNumber = (val, decimals = 1) => Number(val).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+
+// Defensive Parsing Helpers
+function cleanNumber(val, defaultVal = 0) {
+  if (typeof val === 'number') return isNaN(val) ? defaultVal : val;
+  if (!val && val !== 0) return defaultVal;
+  const cleaned = String(val).replace(/[^0-9.-]/g, '');
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? defaultVal : parsed;
+}
+
+function normalizeMonth(val, fallbackIdx) {
+  if (!val) return `Month ${fallbackIdx}`;
+  const trimmed = String(val).trim().replace('/', '-');
+  const parts = trimmed.split('-');
+  if (parts.length === 2) {
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    if (!isNaN(y) && !isNaN(m)) {
+      return `${y.toString().padStart(4, '0')}-${m.toString().padStart(2, '0')}`;
+    }
+  }
+  return trimmed;
+}
 
 // Initialization
 document.addEventListener('DOMContentLoaded', async () => {
@@ -215,6 +252,7 @@ function applyTranslations() {
 }
 
 function parseCSV(text) {
+  if (!text || typeof text !== 'string') return [];
   const lines = text.trim().split(/\r?\n/);
   if (lines.length < 2) return [];
 
@@ -230,28 +268,92 @@ function parseCSV(text) {
       row[h] = values[idx] !== undefined ? values[idx] : '';
     });
 
+    const month = normalizeMonth(row.month, i);
+    const gridImportedKwh = Math.max(0, cleanNumber(row.grid_imported_kwh, 0));
+    const billJpy = Math.max(0, cleanNumber(row.bill_jpy, 0));
+    const solarGeneratedKwh = Math.max(0, cleanNumber(row.solar_generated_kwh, 0));
+    const solarExportedKwh = Math.max(0, cleanNumber(row.solar_exported_kwh, 0));
+    const exportDepositJpy = Math.max(0, cleanNumber(row.export_deposit_jpy, 0));
+    const assumedDayRateJpy = cleanNumber(row.assumed_day_rate_jpy, 35.0);
+
     rows.push({
-      month: row.month || `Month ${i}`,
-      gridImportedKwh: parseFloat(row.grid_imported_kwh) || 0,
-      billJpy: parseFloat(row.bill_jpy) || 0,
-      solarGeneratedKwh: parseFloat(row.solar_generated_kwh) || 0,
-      solarExportedKwh: parseFloat(row.solar_exported_kwh) || 0,
-      exportDepositJpy: parseFloat(row.export_deposit_jpy) || 0,
-      assumedDayRateJpy: parseFloat(row.assumed_day_rate_jpy) || 35.0
+      month,
+      gridImportedKwh,
+      billJpy,
+      solarGeneratedKwh,
+      solarExportedKwh,
+      exportDepositJpy,
+      assumedDayRateJpy: assumedDayRateJpy > 0 ? assumedDayRateJpy : 35.0
     });
   }
 
   return rows.sort((a, b) => a.month.localeCompare(b.month));
 }
 
+// Mathematical Sanity Checks
+function checkRowWarnings(row) {
+  const warnings = [];
+
+  // 1. Generation vs System Capacity Check
+  if (appConfig.solarCapacityKw > 0) {
+    const theoreticalMax = appConfig.solarCapacityKw * 220;
+    if (row.solarGeneratedKwh > theoreticalMax) {
+      warnings.push(
+        t('warnGenCapacity')
+          .replace('{val}', row.solarGeneratedKwh.toLocaleString())
+          .replace('{max}', Math.round(theoreticalMax).toLocaleString())
+          .replace('{cap}', appConfig.solarCapacityKw)
+      );
+    }
+  }
+
+  // 2. Implied Grid Rate Check (Bill vs Import)
+  if (row.gridImportedKwh >= 50 && row.billJpy > 0) {
+    const impliedRate = row.billJpy / row.gridImportedKwh;
+    if (impliedRate > 80) {
+      warnings.push(
+        t('warnHighRate').replace('{rate}', fmtCurrency(impliedRate))
+      );
+    } else if (impliedRate < 15) {
+      warnings.push(
+        t('warnLowRate').replace('{rate}', fmtCurrency(impliedRate))
+      );
+    }
+  }
+
+  // 3. Export exceeds total generation
+  if (row.solarExportedKwh > row.solarGeneratedKwh && row.solarGeneratedKwh > 0) {
+    warnings.push(
+      t('warnExportExceedsGen')
+        .replace('{exp}', row.solarExportedKwh.toLocaleString())
+        .replace('{gen}', row.solarGeneratedKwh.toLocaleString())
+    );
+  }
+
+  // 4. Day Rate out of range check
+  if (row.assumedDayRateJpy < 10 || row.assumedDayRateJpy > 120) {
+    warnings.push(
+      t('warnDayRateRange').replace('{rate}', fmtCurrency(row.assumedDayRateJpy))
+    );
+  }
+
+  return warnings;
+}
+
 function recalculateAndRender() {
-  if (!rawHistoryData.length) return;
+  if (!rawHistoryData.length) {
+    renderHeaderAndMetrics();
+    renderCharts();
+    renderLedgerTable();
+    return;
+  }
 
   let cumulativeVal = 0;
   calculatedRows = rawHistoryData.map(row => {
     const selfConsumedKwh = Math.max(0, row.solarGeneratedKwh - row.solarExportedKwh);
     const selfConsumptionSavings = selfConsumedKwh * row.assumedDayRateJpy;
     const totalMonthlyValue = selfConsumptionSavings + row.exportDepositJpy;
+    const warnings = checkRowWarnings(row);
     
     cumulativeVal += totalMonthlyValue;
 
@@ -260,7 +362,8 @@ function recalculateAndRender() {
       selfConsumedKwh,
       selfConsumptionSavings,
       totalMonthlyValue,
-      cumulativeValue: cumulativeVal
+      cumulativeValue: cumulativeVal,
+      warnings
     };
   });
 
@@ -270,7 +373,7 @@ function recalculateAndRender() {
 }
 
 function renderHeaderAndMetrics() {
-  const netInvestment = appConfig.netInvestment || (appConfig.systemCost - appConfig.subsidyReceived);
+  const netInvestment = appConfig.netInvestment || (appConfig.systemCost - appConfig.subsidyReceived) || 0;
   const totalCumulative = calculatedRows.length ? calculatedRows[calculatedRows.length - 1].cumulativeValue : 0;
   const paybackPercent = netInvestment > 0 ? Math.min(100, (totalCumulative / netInvestment) * 100) : 100;
   const remaining = Math.max(0, netInvestment - totalCumulative);
@@ -304,7 +407,7 @@ function renderHeaderAndMetrics() {
     
     const lastMonthStr = calculatedRows[calculatedRows.length - 1].month;
     const [year, month] = lastMonthStr.split('-').map(Number);
-    const targetDate = new Date(year, month - 1 + monthsRemaining);
+    const targetDate = new Date(year, (month || 1) - 1 + monthsRemaining);
     const targetLocale = (currentLang === 'ja') ? 'ja-JP' : undefined;
     const targetDateStr = targetDate.toLocaleDateString(targetLocale, { year: 'numeric', month: 'short' });
     
@@ -315,18 +418,21 @@ function renderHeaderAndMetrics() {
     } else {
       document.getElementById('monthlyPace').textContent = `${t('metricPacePrefix')}${monthsRemaining} ${t('metricPaceMonths')} ${fmtCurrency(avgMonthlyVal)}${t('metricPaceSuffix')}`;
     }
-  } else if (remaining === 0) {
+  } else if (remaining === 0 && calculatedRows.length > 0) {
     if (breakEvenLabelEl) breakEvenLabelEl.textContent = t('metricNetProfit');
     const roiPercent = netInvestment > 0 ? ((netProfit / netInvestment) * 100).toFixed(1) : '0.0';
     document.getElementById('projectedBreakEven').textContent = `+${fmtCurrency(netProfit)}`;
     document.getElementById('monthlyPace').textContent = `+${roiPercent}% ${t('metricNetProfitSub')}`;
+  } else {
+    document.getElementById('projectedBreakEven').textContent = '--';
+    document.getElementById('monthlyPace').textContent = t('metricMonthlyPace');
   }
 }
 
 function renderCharts() {
   const labels = calculatedRows.map(r => r.month);
   const cumulativeVals = calculatedRows.map(r => Math.round(r.cumulativeValue));
-  const netCost = appConfig.netInvestment || (appConfig.systemCost - appConfig.subsidyReceived);
+  const netCost = appConfig.netInvestment || (appConfig.systemCost - appConfig.subsidyReceived) || 0;
   const targetLine = calculatedRows.map(() => netCost);
 
   // Amortization Chart
@@ -528,10 +634,24 @@ function renderLedgerTable() {
   const tbody = document.getElementById('ledgerTableBody');
   tbody.innerHTML = '';
 
+  if (!calculatedRows.length) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="10" class="table-empty-message">${t('noDataFound')}</td>`;
+    tbody.appendChild(tr);
+    return;
+  }
+
   calculatedRows.forEach(row => {
     const tr = document.createElement('tr');
+    const hasWarnings = row.warnings && row.warnings.length > 0;
+    const warningTooltip = hasWarnings ? row.warnings.join('\n') : '';
+
+    const monthHtml = hasWarnings
+      ? `<span class="month-cell">${row.month} <span class="warning-badge" title="${warningTooltip}">⚠️</span></span>`
+      : row.month;
+
     tr.innerHTML = `
-      <td>${row.month}</td>
+      <td>${monthHtml}</td>
       <td>${fmtCurrency(row.billJpy)}</td>
       <td>${fmtNumber(row.gridImportedKwh, 0)} kWh</td>
       <td>${fmtCurrency(row.assumedDayRateJpy)}/kWh</td>

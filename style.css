@@ -342,6 +342,28 @@ body {
   color: var(--accent);
 }
 
+.month-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.warning-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  cursor: help;
+  position: relative;
+}
+
+.table-empty-message {
+  text-align: center !important;
+  color: var(--text-dim);
+  padding: 2rem !important;
+  font-style: italic;
+}
+
 .dashboard-footer {
   text-align: center;
   color: var(--text-dim);
