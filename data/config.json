@@ -1,9 +1,9 @@
 {
   "language": "en",
   "currency": "¥",
-  "systemCost": 2800000,
-  "subsidyReceived": 1200000,
-  "netInvestment": 1600000,
+  "systemCost": 4300000,
+  "subsidyReceived": 2106000,
+  "netInvestment": 2194000,
   "installationDate": "2026-03-15",
   "solarCapacityKw": 6.2,
   "batteryCapacityKwh": 9.8,
