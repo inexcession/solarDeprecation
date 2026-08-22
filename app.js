@@ -1,126 +1,5 @@
+(() => {
 // Fallback i18n dictionary for offline / direct file preview
-const embeddedI18n = {
-  en: {
-    pageTitle: "Solar Deprecation & Payback Dashboard",
-    defaultSystemName: "Solar + Storage",
-    solarOnlySystemName: "Residential Solar",
-    mainTitle: "Investment Amortization & ROI",
-    mainSubtitle: "Tracking real-world generation, self-consumption savings, and grid offset",
-    solarUnit: "kW Solar",
-    batteryUnit: "kWh Battery",
-    inverterUnit: "kW Inverter",
-    btnExportCSV: "Export Calculated CSV",
-    metricPaybackProgress: "Payback Progress",
-    metricRemaining: "remaining",
-    metricFullyAmortized: "Fully Amortized!",
-    metricCumulativeReturn: "Cumulative Total Return",
-    metricCumulativeBreakdown: "Self-consumption + Export deposits",
-    metricNetCost: "Net System Cost",
-    metricNetCostBreakdown: "Gross cost minus subsidies",
-    metricProjectedBreakEven: "Projected Break-Even",
-    metricMonthlyPace: "Based on active run-rate",
-    metricNetProfit: "Net Profit Generated",
-    metricNetProfitSub: "ROI over net investment",
-    metricAchieved: "Achieved",
-    metricFullyPaid: "System has fully paid for itself",
-    metricPacePrefix: "~",
-    metricPaceMonths: "months at",
-    metricPaceSuffix: "/mo pace",
-    chartAmortizationTitle: "Cumulative Amortization Timeline",
-    chartAmortizationSubtitle: "Cumulative value generated over time versus net investment threshold",
-    chartAmortizationCumulativeLabel: "Cumulative Value Generated",
-    chartAmortizationTargetLabel: "Net Investment Threshold",
-    chartMonthlyTitle: "Monthly Financial Offset",
-    chartMonthlySubtitle: "Self-consumption savings + feed-in deposits vs grid bill",
-    chartMonthlySavingsLabel: "Self-Consumption",
-    chartMonthlyDepositLabel: "Export Deposit",
-    chartMonthlyBillLabel: "Grid Bill",
-    chartEnergyTitle: "Energy Generation & Self-Consumption",
-    chartEnergySubtitle: "Solar generated, self-consumed, and exported (kWh)",
-    chartEnergySelfConsumedLabel: "Self-Consumed",
-    chartEnergyExportedLabel: "Exported",
-    chartEnergyImportedLabel: "Imported",
-    tableTitle: "Monthly Ledger",
-    tableSubtitle: "Computed self-consumption offsets based on assumed replacement grid rate",
-    thMonth: "Month",
-    thGridBill: "Grid Bill",
-    thGridImport: "Grid Import",
-    thDaytimeRate: "Assumed Day Rate",
-    thSolarGen: "Solar Gen",
-    thSelfConsumed: "Self-Consumed",
-    thSavings: "Savings",
-    thExportRevenue: "Export Revenue",
-    thTotalValue: "Total Value",
-    thCumulative: "Cumulative",
-    warnGenCapacity: "Solar generation ({val} kWh) exceeds typical maximum (~{max} kWh) for a {cap} kW system.",
-    warnHighRate: "Implied electricity rate ({rate}/kWh) is unusually high. Check bill amount or grid import kWh.",
-    warnLowRate: "Implied electricity rate ({rate}/kWh) is unusually low. Check bill amount or grid import kWh.",
-    warnExportExceedsGen: "Exported energy ({exp} kWh) exceeds total generation ({gen} kWh).",
-    warnDayRateRange: "Assumed daytime rate ({rate}/kWh) is outside expected range.",
-    noDataFound: "No valid monthly records found in data/history.csv.",
-    footerText: "Data synced directly from <code>data/history.csv</code> & <code>data/config.json</code> in repository."
-  },
-  ja: {
-    pageTitle: "太陽光・蓄電池 投資回収・償却ダッシュボード",
-    defaultSystemName: "太陽光発電＋蓄電池",
-    solarOnlySystemName: "住宅用太陽光発電",
-    mainTitle: "設備投資回収・経済効果ダッシュボード",
-    mainSubtitle: "実績データに基づく自家消費削減額・売電収入・投資回収進捗の可視化",
-    solarUnit: "kW 太陽光",
-    batteryUnit: "kWh 蓄電池",
-    inverterUnit: "kW パワコン",
-    btnExportCSV: "計算結果CSV出力",
-    metricPaybackProgress: "投資回収進捗",
-    metricRemaining: "残額",
-    metricFullyAmortized: "回収完了！",
-    metricCumulativeReturn: "累積経済効果額",
-    metricCumulativeBreakdown: "自家消費削減額 ＋ 売電振込額",
-    metricNetCost: "実質投資額",
-    metricNetCostBreakdown: "設備総費用（補助金差引後）",
-    metricProjectedBreakEven: "回収完了予測",
-    metricMonthlyPace: "直近の実績ペースに基づく予測",
-    metricNetProfit: "創出純利益額",
-    metricNetProfitSub: "実質投資額に対するROI",
-    metricAchieved: "回収達成",
-    metricFullyPaid: "設備投資費用を全額回収しました",
-    metricPacePrefix: "月平均 ",
-    metricPaceMonths: " で残り約",
-    metricPaceSuffix: "ヶ月",
-    chartAmortizationTitle: "累積投資回収推移",
-    chartAmortizationSubtitle: "実質投資額に対する累積経済効果の推移（損益分岐ライン）",
-    chartAmortizationCumulativeLabel: "累積経済効果額",
-    chartAmortizationTargetLabel: "実質投資額ライン",
-    chartMonthlyTitle: "月次経済効果内訳",
-    chartMonthlySubtitle: "自家消費による削減額＋売電収入 vs 買電請求額",
-    chartMonthlySavingsLabel: "自家消費削減",
-    chartMonthlyDepositLabel: "売電収入",
-    chartMonthlyBillLabel: "買電請求",
-    chartEnergyTitle: "電力収支バランス（発電・自家消費・買電）",
-    chartEnergySubtitle: "太陽光発電量・自家消費量・売電量・買電量 (kWh)",
-    chartEnergySelfConsumedLabel: "自家消費",
-    chartEnergyExportedLabel: "売電",
-    chartEnergyImportedLabel: "買電",
-    tableTitle: "月次明細一覧",
-    tableSubtitle: "設定された想定昼間単価に基づく自家消費による経済効果",
-    thMonth: "年月",
-    thGridBill: "買電請求額",
-    thGridImport: "買電量",
-    thDaytimeRate: "想定昼間単価",
-    thSolarGen: "発電量",
-    thSelfConsumed: "自家消費量",
-    thSavings: "削減効果額",
-    thExportRevenue: "売電収入",
-    thTotalValue: "月次経済効果",
-    thCumulative: "累積回収額",
-    warnGenCapacity: "発電量（{val} kWh）が{cap} kWシステムの理論最大値（約{max} kWh）を超過しています。",
-    warnHighRate: "実効電気料金単価（{rate}/kWh）が異常に高額です。請求額や買電量をご確認ください。",
-    warnLowRate: "実効電気料金単価（{rate}/kWh）が異常に低額です。請求額や買電量をご確認ください。",
-    warnExportExceedsGen: "売電量（{exp} kWh）が総発電量（{gen} kWh）を上回っています。",
-    warnDayRateRange: "想定昼間単価（{rate}/kWh）が標準範囲外です。",
-    noDataFound: "data/history.csv に有効な月次データが見つかりません。",
-    footerText: "リポジトリの <code>data/history.csv</code> および <code>data/config.json</code> からデータを直接読み込んでいます。"
-  }
-};
 
 let i18n = embeddedI18n;
 let currentLang = 'en';
@@ -131,12 +10,24 @@ let appConfig = {
   systemCost: 4300000,
   subsidyReceived: 2106000,
   netInvestment: 2194000,
-  installationDate: '2026-03-15',
   solarCapacityKw: 15.0,
   batteryCapacityKwh: 13.0,
   inverterCapacityKw: 9.9,
-  systemName: ''
+  systemName: '',
+  defaultDayRate: 35.0,
+  maxGenMultiplier: 220,
+  highRateThreshold: 80,
+  lowRateThreshold: 15
 };
+
+function escapeHtml(unsafe) {
+  return (unsafe || '').toString()
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 let rawHistoryData = [];
 let calculatedRows = [];
@@ -157,7 +48,7 @@ const fmtNumber = (val, decimals = 1) => Number(val).toLocaleString(undefined, {
 function cleanNumber(val, defaultVal = 0) {
   if (typeof val === 'number') return isNaN(val) ? defaultVal : val;
   if (!val && val !== 0) return defaultVal;
-  const cleaned = String(val).replace(/[^0-9.-]/g, '');
+  const cleaned = String(val).replace(/,/g, '').trim();
   const parsed = parseFloat(cleaned);
   return isNaN(parsed) ? defaultVal : parsed;
 }
@@ -262,7 +153,7 @@ function parseCSV(text) {
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line) continue;
-    const values = line.split(',').map(v => v.trim());
+    const values = line.split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/).map(v => v.trim().replace(/^\"|\"$/g, ''));
     const row = {};
     headers.forEach((h, idx) => {
       row[h] = values[idx] !== undefined ? values[idx] : '';
@@ -274,7 +165,7 @@ function parseCSV(text) {
     const solarGeneratedKwh = Math.max(0, cleanNumber(row.solar_generated_kwh, 0));
     const solarExportedKwh = Math.max(0, cleanNumber(row.solar_exported_kwh, 0));
     const exportDepositJpy = Math.max(0, cleanNumber(row.export_deposit_jpy, 0));
-    const assumedDayRateJpy = cleanNumber(row.assumed_day_rate_jpy, 35.0);
+    const assumedDayRateJpy = cleanNumber(row.assumed_day_rate_jpy, appConfig.defaultDayRate || 35.0);
 
     rows.push({
       month,
@@ -283,7 +174,7 @@ function parseCSV(text) {
       solarGeneratedKwh,
       solarExportedKwh,
       exportDepositJpy,
-      assumedDayRateJpy: assumedDayRateJpy > 0 ? assumedDayRateJpy : 35.0
+      assumedDayRateJpy: assumedDayRateJpy > 0 ? assumedDayRateJpy : (appConfig.defaultDayRate || 35.0)
     });
   }
 
@@ -296,7 +187,7 @@ function checkRowWarnings(row) {
 
   // 1. Generation vs System Capacity Check
   if (appConfig.solarCapacityKw > 0) {
-    const theoreticalMax = appConfig.solarCapacityKw * 220;
+    const theoreticalMax = appConfig.solarCapacityKw * (appConfig.maxGenMultiplier || 220);
     if (row.solarGeneratedKwh > theoreticalMax) {
       warnings.push(
         t('warnGenCapacity')
@@ -310,11 +201,11 @@ function checkRowWarnings(row) {
   // 2. Implied Grid Rate Check (Bill vs Import)
   if (row.gridImportedKwh >= 50 && row.billJpy > 0) {
     const impliedRate = row.billJpy / row.gridImportedKwh;
-    if (impliedRate > 80) {
+    if (impliedRate > (appConfig.highRateThreshold || 80)) {
       warnings.push(
         t('warnHighRate').replace('{rate}', fmtCurrency(impliedRate))
       );
-    } else if (impliedRate < 15) {
+    } else if (impliedRate < (appConfig.lowRateThreshold || 15)) {
       warnings.push(
         t('warnLowRate').replace('{rate}', fmtCurrency(impliedRate))
       );
@@ -406,7 +297,12 @@ function renderHeaderAndMetrics() {
     const monthsRemaining = avgMonthlyVal > 0 ? Math.ceil(remaining / avgMonthlyVal) : 0;
     
     const lastMonthStr = calculatedRows[calculatedRows.length - 1].month;
-    const [year, month] = lastMonthStr.split('-').map(Number);
+    let [year, month] = lastMonthStr.split('-').map(Number);
+    if (isNaN(year) || isNaN(month)) {
+      const now = new Date();
+      year = now.getFullYear();
+      month = now.getMonth() + 1;
+    }
     const targetDate = new Date(year, (month || 1) - 1 + monthsRemaining);
     const targetLocale = (currentLang === 'ja') ? 'ja-JP' : undefined;
     const targetDateStr = targetDate.toLocaleDateString(targetLocale, { year: 'numeric', month: 'short' });
@@ -435,199 +331,88 @@ function renderCharts() {
   const netCost = appConfig.netInvestment || (appConfig.systemCost - appConfig.subsidyReceived) || 0;
   const targetLine = calculatedRows.map(() => netCost);
 
+  const savingsVals = calculatedRows.map(r => Math.round(r.selfConsumptionSavings));
+  const depositVals = calculatedRows.map(r => Math.round(r.exportDepositJpy));
+  const billVals = calculatedRows.map(r => Math.round(r.billJpy));
+  
+  const selfConsumedVals = calculatedRows.map(r => Math.round(r.selfConsumedKwh));
+  const exportedVals = calculatedRows.map(r => Math.round(r.solarExportedKwh));
+  const importedVals = calculatedRows.map(r => Math.round(r.gridImportedKwh));
+
   // Amortization Chart
-  const ctxAmortization = document.getElementById('amortizationChart').getContext('2d');
-  if (amortizationChart) amortizationChart.destroy();
-
-  amortizationChart = new Chart(ctxAmortization, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: t('chartAmortizationCumulativeLabel'),
-          data: cumulativeVals,
-          borderColor: '#10b981',
-          backgroundColor: 'rgba(16, 185, 129, 0.15)',
-          fill: true,
-          tension: 0.25,
-          borderWidth: 2,
-          pointRadius: 4,
-          pointBackgroundColor: '#10b981'
-        },
-        {
-          label: t('chartAmortizationTargetLabel'),
-          data: targetLine,
-          borderColor: '#ef4444',
-          borderDash: [6, 6],
-          borderWidth: 1.5,
-          pointRadius: 0,
-          fill: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            boxWidth: 8,
-            boxHeight: 8,
-            usePointStyle: true,
-            pointStyle: 'circle',
-            padding: 12,
-            color: '#94a3b8',
-            font: { size: 12, family: 'Plus Jakarta Sans, sans-serif' }
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: (context) => `${context.dataset.label}: ${fmtCurrency(context.raw)}`
-          }
-        }
+  if (amortizationChart) {
+    amortizationChart.data.labels = labels;
+    amortizationChart.data.datasets[0].data = cumulativeVals;
+    amortizationChart.data.datasets[0].label = t('chartAmortizationCumulativeLabel');
+    amortizationChart.data.datasets[1].data = targetLine;
+    amortizationChart.data.datasets[1].label = t('chartAmortizationTargetLabel');
+    amortizationChart.update();
+  } else {
+    const ctxAmortization = document.getElementById('amortizationChart').getContext('2d');
+    amortizationChart = new Chart(ctxAmortization, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: t('chartAmortizationCumulativeLabel'), data: cumulativeVals, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.15)', fill: true, tension: 0.25, borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#10b981' },
+          { label: t('chartAmortizationTargetLabel'), data: targetLine, borderColor: '#ef4444', borderDash: [6, 6], borderWidth: 1.5, pointRadius: 0, fill: false }
+        ]
       },
-      scales: {
-        x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(30, 41, 59, 0.5)' } },
-        y: { 
-          ticks: { 
-            color: '#64748b',
-            callback: (val) => fmtCurrency(val)
-          }, 
-          grid: { color: 'rgba(30, 41, 59, 0.5)' } 
-        }
-      }
-    }
-  });
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, padding: 12, color: '#94a3b8', font: { size: 12, family: 'Plus Jakarta Sans, sans-serif' } } }, tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${fmtCurrency(context.raw)}` } } }, scales: { x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(30, 41, 59, 0.5)' } }, y: { ticks: { color: '#64748b', callback: (val) => fmtCurrency(val) }, grid: { color: 'rgba(30, 41, 59, 0.5)' } } } }
+    });
+  }
 
-  // Monthly Financial Breakdown
-  const ctxMonthly = document.getElementById('monthlyValueChart').getContext('2d');
-  if (monthlyValueChart) monthlyValueChart.destroy();
-
-  monthlyValueChart = new Chart(ctxMonthly, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: t('chartMonthlySavingsLabel'),
-          data: calculatedRows.map(r => Math.round(r.selfConsumptionSavings)),
-          backgroundColor: '#10b981',
-          borderRadius: 4
-        },
-        {
-          label: t('chartMonthlyDepositLabel'),
-          data: calculatedRows.map(r => Math.round(r.exportDepositJpy)),
-          backgroundColor: '#f59e0b',
-          borderRadius: 4
-        },
-        {
-          label: t('chartMonthlyBillLabel'),
-          data: calculatedRows.map(r => Math.round(r.billJpy)),
-          backgroundColor: '#334155',
-          borderRadius: 4
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            boxWidth: 8,
-            boxHeight: 8,
-            usePointStyle: true,
-            pointStyle: 'circle',
-            padding: 12,
-            color: '#94a3b8',
-            font: { size: 12, family: 'Plus Jakarta Sans, sans-serif' }
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: (context) => `${context.dataset.label}: ${fmtCurrency(context.raw)}`
-          }
-        }
+  // Monthly Value Chart
+  if (monthlyValueChart) {
+    monthlyValueChart.data.labels = labels;
+    monthlyValueChart.data.datasets[0].data = savingsVals;
+    monthlyValueChart.data.datasets[0].label = t('chartMonthlySavingsLabel');
+    monthlyValueChart.data.datasets[1].data = depositVals;
+    monthlyValueChart.data.datasets[1].label = t('chartMonthlyDepositLabel');
+    monthlyValueChart.data.datasets[2].data = billVals;
+    monthlyValueChart.data.datasets[2].label = t('chartMonthlyBillLabel');
+    monthlyValueChart.update();
+  } else {
+    const ctxMonthly = document.getElementById('monthlyValueChart').getContext('2d');
+    monthlyValueChart = new Chart(ctxMonthly, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: t('chartMonthlySavingsLabel'), data: savingsVals, backgroundColor: '#10b981', borderRadius: 4 },
+          { label: t('chartMonthlyDepositLabel'), data: depositVals, backgroundColor: '#f59e0b', borderRadius: 4 },
+          { label: t('chartMonthlyBillLabel'), data: billVals, backgroundColor: '#334155', borderRadius: 4 }
+        ]
       },
-      scales: {
-        x: { stacked: false, ticks: { color: '#64748b' }, grid: { display: false } },
-        y: { 
-          ticks: { 
-            color: '#64748b',
-            callback: (val) => fmtCurrency(val)
-          }, 
-          grid: { color: 'rgba(30, 41, 59, 0.5)' } 
-        }
-      }
-    }
-  });
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, padding: 12, color: '#94a3b8', font: { size: 12, family: 'Plus Jakarta Sans, sans-serif' } } }, tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${fmtCurrency(context.raw)}` } } }, scales: { x: { stacked: false, ticks: { color: '#64748b' }, grid: { display: false } }, y: { ticks: { color: '#64748b', callback: (val) => fmtCurrency(val) }, grid: { color: 'rgba(30, 41, 59, 0.5)' } } } }
+    });
+  }
 
   // Energy Flow Chart
-  const ctxEnergy = document.getElementById('energyFlowChart').getContext('2d');
-  if (energyFlowChart) energyFlowChart.destroy();
-
-  energyFlowChart = new Chart(ctxEnergy, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: t('chartEnergySelfConsumedLabel'),
-          data: calculatedRows.map(r => Math.round(r.selfConsumedKwh)),
-          backgroundColor: '#10b981',
-          borderRadius: 4
-        },
-        {
-          label: t('chartEnergyExportedLabel'),
-          data: calculatedRows.map(r => Math.round(r.solarExportedKwh)),
-          backgroundColor: '#f59e0b',
-          borderRadius: 4
-        },
-        {
-          label: t('chartEnergyImportedLabel'),
-          data: calculatedRows.map(r => Math.round(r.gridImportedKwh)),
-          backgroundColor: '#38bdf8',
-          borderRadius: 4
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            boxWidth: 8,
-            boxHeight: 8,
-            usePointStyle: true,
-            pointStyle: 'circle',
-            padding: 12,
-            color: '#94a3b8',
-            font: { size: 12, family: 'Plus Jakarta Sans, sans-serif' }
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: (context) => `${context.dataset.label}: ${context.raw.toLocaleString()} kWh`
-          }
-        }
+  if (energyFlowChart) {
+    energyFlowChart.data.labels = labels;
+    energyFlowChart.data.datasets[0].data = selfConsumedVals;
+    energyFlowChart.data.datasets[0].label = t('chartEnergySelfConsumedLabel');
+    energyFlowChart.data.datasets[1].data = exportedVals;
+    energyFlowChart.data.datasets[1].label = t('chartEnergyExportedLabel');
+    energyFlowChart.data.datasets[2].data = importedVals;
+    energyFlowChart.data.datasets[2].label = t('chartEnergyImportedLabel');
+    energyFlowChart.update();
+  } else {
+    const ctxEnergy = document.getElementById('energyFlowChart').getContext('2d');
+    energyFlowChart = new Chart(ctxEnergy, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: t('chartEnergySelfConsumedLabel'), data: selfConsumedVals, backgroundColor: '#10b981', borderRadius: 4 },
+          { label: t('chartEnergyExportedLabel'), data: exportedVals, backgroundColor: '#f59e0b', borderRadius: 4 },
+          { label: t('chartEnergyImportedLabel'), data: importedVals, backgroundColor: '#38bdf8', borderRadius: 4 }
+        ]
       },
-      scales: {
-        x: { ticks: { color: '#64748b' }, grid: { display: false } },
-        y: { 
-          ticks: { 
-            color: '#64748b',
-            callback: (val) => `${val} kWh`
-          }, 
-          grid: { color: 'rgba(30, 41, 59, 0.5)' } 
-        }
-      }
-    }
-  });
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { boxWidth: 8, boxHeight: 8, usePointStyle: true, padding: 12, color: '#94a3b8', font: { size: 12, family: 'Plus Jakarta Sans, sans-serif' } } }, tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${context.raw.toLocaleString()} kWh` } } }, scales: { x: { ticks: { color: '#64748b' }, grid: { display: false } }, y: { ticks: { color: '#64748b', callback: (val) => `${val} kWh` }, grid: { color: 'rgba(30, 41, 59, 0.5)' } } } }
+    });
+  }
 }
 
 function renderLedgerTable() {
@@ -641,29 +426,32 @@ function renderLedgerTable() {
     return;
   }
 
+  const fragment = document.createDocumentFragment();
   calculatedRows.forEach(row => {
     const tr = document.createElement('tr');
     const hasWarnings = row.warnings && row.warnings.length > 0;
-    const warningTooltip = hasWarnings ? row.warnings.join('\n') : '';
+    const warningTooltip = hasWarnings ? escapeHtml(row.warnings.join('\n')) : '';
+    const safeMonth = escapeHtml(row.month);
 
     const monthHtml = hasWarnings
-      ? `<span class="month-cell">${row.month} <span class="warning-badge" title="${warningTooltip}">⚠️</span></span>`
-      : row.month;
+      ? `<span class="month-cell">${safeMonth} <span class="warning-badge" title="${warningTooltip}" tabindex="0" role="tooltip" aria-label="${warningTooltip}">⚠️</span></span>`
+      : safeMonth;
 
     tr.innerHTML = `
       <td>${monthHtml}</td>
-      <td>${fmtCurrency(row.billJpy)}</td>
-      <td>${fmtNumber(row.gridImportedKwh, 0)} kWh</td>
-      <td>${fmtCurrency(row.assumedDayRateJpy)}/kWh</td>
-      <td>${fmtNumber(row.solarGeneratedKwh, 0)} kWh</td>
-      <td>${fmtNumber(row.selfConsumedKwh, 0)} kWh</td>
-      <td class="highlight-positive">${fmtCurrency(row.selfConsumptionSavings)}</td>
-      <td>${row.exportDepositJpy > 0 ? fmtCurrency(row.exportDepositJpy) : '-'}</td>
-      <td class="highlight-positive"><strong>${fmtCurrency(row.totalMonthlyValue)}</strong></td>
-      <td>${fmtCurrency(row.cumulativeValue)}</td>
+      <td>${escapeHtml(fmtCurrency(row.billJpy))}</td>
+      <td>${escapeHtml(fmtNumber(row.gridImportedKwh, 0))} kWh</td>
+      <td>${escapeHtml(fmtCurrency(row.assumedDayRateJpy))}/kWh</td>
+      <td>${escapeHtml(fmtNumber(row.solarGeneratedKwh, 0))} kWh</td>
+      <td>${escapeHtml(fmtNumber(row.selfConsumedKwh, 0))} kWh</td>
+      <td class="highlight-positive">${escapeHtml(fmtCurrency(row.selfConsumptionSavings))}</td>
+      <td>${row.exportDepositJpy > 0 ? escapeHtml(fmtCurrency(row.exportDepositJpy)) : '-'}</td>
+      <td class="highlight-positive"><strong>${escapeHtml(fmtCurrency(row.totalMonthlyValue))}</strong></td>
+      <td>${escapeHtml(fmtCurrency(row.cumulativeValue))}</td>
     `;
-    tbody.appendChild(tr);
+    fragment.appendChild(tr);
   });
+  tbody.appendChild(fragment);
 }
 
 function setupEventListeners() {
@@ -692,3 +480,5 @@ function setupEventListeners() {
     document.body.removeChild(link);
   });
 }
+
+})();

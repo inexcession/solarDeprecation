@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="pageTitle">Solar Deprecation & Payback Dashboard</title>
+  <title data-i18n="pageTitle">Solar Depreciation & Payback Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -21,9 +21,9 @@
         </div>
         <div class="header-actions">
           <div class="lang-switch-group">
-            <button class="lang-btn" id="langEnBtn" data-lang="en">EN</button>
+            <button class="lang-btn" id="langEnBtn" data-lang="en" aria-label="Switch to English">EN</button>
             <span class="lang-divider">/</span>
-            <button class="lang-btn" id="langJaBtn" data-lang="ja">日本語</button>
+            <button class="lang-btn" id="langJaBtn" data-lang="ja" aria-label="Switch to Japanese">日本語</button>
           </div>
         </div>
       </div>
@@ -113,16 +113,16 @@
         <table class="data-table" id="ledgerTable">
           <thead>
             <tr>
-              <th data-i18n="thMonth">Month</th>
-              <th data-i18n="thGridBill">Grid Bill</th>
-              <th data-i18n="thGridImport">Grid Import</th>
-              <th data-i18n="thDaytimeRate">Assumed Day Rate</th>
-              <th data-i18n="thSolarGen">Solar Gen</th>
-              <th data-i18n="thSelfConsumed">Self-Consumed</th>
-              <th data-i18n="thSavings">Savings</th>
-              <th data-i18n="thExportRevenue">Export Revenue</th>
-              <th data-i18n="thTotalValue">Total Value</th>
-              <th data-i18n="thCumulative">Cumulative</th>
+              <th scope="col" data-i18n="thMonth">Month</th>
+              <th scope="col" data-i18n="thGridBill">Grid Bill</th>
+              <th scope="col" data-i18n="thGridImport">Grid Import</th>
+              <th scope="col" data-i18n="thDaytimeRate">Assumed Day Rate</th>
+              <th scope="col" data-i18n="thSolarGen">Solar Gen</th>
+              <th scope="col" data-i18n="thSelfConsumed">Self-Consumed</th>
+              <th scope="col" data-i18n="thSavings">Savings</th>
+              <th scope="col" data-i18n="thExportRevenue">Export Revenue</th>
+              <th scope="col" data-i18n="thTotalValue">Total Value</th>
+              <th scope="col" data-i18n="thCumulative">Cumulative</th>
             </tr>
           </thead>
           <tbody id="ledgerTableBody">
@@ -137,6 +137,7 @@
     </footer>
   </div>
 
+  <script src="translations.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-# Solar Deprecation & ROI Calculator
+# Solar Depreciation & ROI Calculator
 
 English | [日本語](README.ja.md)
 
@@ -53,7 +53,7 @@ Remaining Balance (¥) = max(0, Net Investment - Cumulative Value)
 
 ### 6. Projected Break-Even Date
 ```
-Average Monthly Value = Cumulative Value / Number of Recorded Months
+Average Monthly Value = Average of the Last 12 Recorded Months (TTM)
 Months Remaining = ceil(Remaining Balance / Average Monthly Value)
 Projected Date = Latest Recorded Month + Months Remaining
 ```
