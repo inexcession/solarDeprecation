@@ -31,16 +31,16 @@ const embeddedI18n = {
     chartAmortizationTargetLabel: "Net Investment Threshold",
     chartMonthlyTitle: "Monthly Financial Offset",
     chartMonthlySubtitle: "Self-consumption savings + feed-in deposits vs grid bill",
-    chartMonthlySavingsLabel: "Self-Consumption Savings",
+    chartMonthlySavingsLabel: "Self-Consumption",
     chartMonthlyDepositLabel: "Export Deposit",
-    chartMonthlyBillLabel: "Grid Bill Paid",
+    chartMonthlyBillLabel: "Grid Bill",
     chartEnergyTitle: "Energy Generation & Self-Consumption",
     chartEnergySubtitle: "Solar generated, self-consumed, and exported (kWh)",
-    chartEnergySelfConsumedLabel: "Self-Consumed (kWh)",
-    chartEnergyExportedLabel: "Exported to Grid (kWh)",
-    chartEnergyImportedLabel: "Imported from Grid (kWh)",
+    chartEnergySelfConsumedLabel: "Self-Consumed",
+    chartEnergyExportedLabel: "Exported",
+    chartEnergyImportedLabel: "Imported",
     tableTitle: "Monthly Ledger",
-    tableSubtitle: "Computed monthly effective rates and derived self-consumption offsets",
+    tableSubtitle: "Computed self-consumption offsets based on assumed replacement grid rate",
     thMonth: "Month",
     thGridBill: "Grid Bill",
     thGridImport: "Grid Import",
@@ -84,14 +84,14 @@ const embeddedI18n = {
     chartAmortizationTargetLabel: "実質投資額ライン",
     chartMonthlyTitle: "月次経済効果内訳",
     chartMonthlySubtitle: "自家消費による削減額＋売電収入 vs 買電請求額",
-    chartMonthlySavingsLabel: "自家消費削減効果額",
-    chartMonthlyDepositLabel: "売電収入（振込額）",
-    chartMonthlyBillLabel: "買電請求額",
+    chartMonthlySavingsLabel: "自家消費削減",
+    chartMonthlyDepositLabel: "売電収入",
+    chartMonthlyBillLabel: "買電請求",
     chartEnergyTitle: "電力収支バランス（発電・自家消費・買電）",
     chartEnergySubtitle: "太陽光発電量・自家消費量・売電量・買電量 (kWh)",
-    chartEnergySelfConsumedLabel: "自家消費量 (kWh)",
-    chartEnergyExportedLabel: "売電量 (kWh)",
-    chartEnergyImportedLabel: "買電量 (kWh)",
+    chartEnergySelfConsumedLabel: "自家消費",
+    chartEnergyExportedLabel: "売電",
+    chartEnergyImportedLabel: "買電",
     tableTitle: "月次明細一覧",
     tableSubtitle: "設定された想定昼間単価に基づく自家消費による経済効果",
     thMonth: "年月",
@@ -364,7 +364,18 @@ function renderCharts() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans, sans-serif' } } },
+        legend: {
+          position: 'top',
+          labels: {
+            boxWidth: 8,
+            boxHeight: 8,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 12,
+            color: '#94a3b8',
+            font: { size: 12, family: 'Plus Jakarta Sans, sans-serif' }
+          }
+        },
         tooltip: {
           callbacks: {
             label: (context) => `${context.dataset.label}: ${fmtCurrency(context.raw)}`
@@ -417,7 +428,18 @@ function renderCharts() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans, sans-serif' } } },
+        legend: {
+          position: 'top',
+          labels: {
+            boxWidth: 8,
+            boxHeight: 8,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 12,
+            color: '#94a3b8',
+            font: { size: 12, family: 'Plus Jakarta Sans, sans-serif' }
+          }
+        },
         tooltip: {
           callbacks: {
             label: (context) => `${context.dataset.label}: ${fmtCurrency(context.raw)}`
@@ -470,7 +492,18 @@ function renderCharts() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans, sans-serif' } } },
+        legend: {
+          position: 'top',
+          labels: {
+            boxWidth: 8,
+            boxHeight: 8,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 12,
+            color: '#94a3b8',
+            font: { size: 12, family: 'Plus Jakarta Sans, sans-serif' }
+          }
+        },
         tooltip: {
           callbacks: {
             label: (context) => `${context.dataset.label}: ${context.raw.toLocaleString()} kWh`
