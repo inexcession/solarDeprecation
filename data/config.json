@@ -1,0 +1,11 @@
+{
+  "currency": "¥",
+  "systemCost": 2800000,
+  "subsidyReceived": 1200000,
+  "netInvestment": 1600000,
+  "installationDate": "2023-06-01",
+  "solarCapacityKw": 6.2,
+  "batteryCapacityKwh": 9.8,
+  "daytimeMultiplier": 1.15,
+  "systemName": "Residential Solar + Storage"
+}

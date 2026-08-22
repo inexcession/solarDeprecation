@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar Deprecation & Payback Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="dashboard-header">
+      <div class="header-main">
+        <div class="title-group">
+          <span class="system-badge" id="systemName">Solar + Storage</span>
+          <h1>Investment Amortization & ROI</h1>
+          <p class="subtitle" id="systemSpecs">Tracking real-world generation, self-consumption savings, and grid offset</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary" id="openSettingsBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            Parameters
+          </button>
+          <label class="btn btn-secondary file-upload-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Load Local CSV
+            <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <!-- Key Metrics Grid -->
+    <section class="metrics-grid">
+      <div class="metric-card primary-card">
+        <span class="metric-label">Payback Progress</span>
+        <div class="metric-value-group">
+          <span class="metric-value" id="paybackPercent">--%</span>
+          <span class="metric-sub" id="paybackRemaining">-- left</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="paybackProgressBar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">Cumulative Total Return</span>
+        <div class="metric-value" id="cumulativeReturn">--</div>
+        <span class="metric-sub" id="cumulativeBreakdown">Self-consumption + Export deposits</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">Net System Cost</span>
+        <div class="metric-value" id="netInvestmentDisplay">--</div>
+        <span class="metric-sub" id="investmentBreakdown">Gross cost minus subsidies</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">Projected Break-Even</span>
+        <div class="metric-value" id="projectedBreakEven">--</div>
+        <span class="metric-sub" id="monthlyPace">Based on active run-rate</span>
+      </div>
+    </section>
+
+    <!-- Charts Section -->
+    <section class="charts-grid">
+      <div class="chart-panel full-width">
+        <div class="panel-header">
+          <div>
+            <h2>Cumulative Amortization Timeline</h2>
+            <p class="panel-subtitle">Cumulative value generated over time versus net investment threshold</p>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="amortizationChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Monthly Financial Offset</h2>
+            <p class="panel-subtitle">Self-consumption savings + feed-in deposits vs grid bill</p>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="monthlyValueChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Energy Generation & Self-Consumption</h2>
+            <p class="panel-subtitle">Solar generated, self-consumed, and exported (kWh)</p>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="energyFlowChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailed Historical Table -->
+    <section class="table-section">
+      <div class="panel-header">
+        <div>
+          <h2>Monthly Ledger</h2>
+          <p class="panel-subtitle">Computed monthly effective rates and derived self-consumption offsets</p>
+        </div>
+        <button class="btn btn-ghost" id="exportCalculationsBtn">Export Calculated CSV</button>
+      </div>
+      <div class="table-container">
+        <table class="data-table" id="ledgerTable">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Grid Bill</th>
+              <th>Grid Import</th>
+              <th>Effective Rate</th>
+              <th>Solar Gen</th>
+              <th>Self-Consumed</th>
+              <th>Savings</th>
+              <th>Export Revenue</th>
+              <th>Total Value</th>
+              <th>Cumulative</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerTableBody">
+            <!-- Rows injected by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Parameters Modal -->
+    <div class="modal-overlay" id="settingsModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>System & Calculation Parameters</h3>
+          <button class="close-btn" id="closeSettingsBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="inputGrossCost">Gross System Cost (¥)</label>
+            <input type="number" id="inputGrossCost" step="10000">
+          </div>
+          <div class="form-group">
+            <label for="inputSubsidy">Subsidies Received (¥)</label>
+            <input type="number" id="inputSubsidy" step="10000">
+          </div>
+          <div class="form-group">
+            <label for="inputNetCost">Net Investment (¥)</label>
+            <input type="number" id="inputNetCost" step="10000">
+          </div>
+          <div class="form-group">
+            <label for="inputMultiplier">
+              Daytime Rate Multiplier
+              <span class="tooltip-icon" title="Adjusts the effective rate for solar hours when daytime tariffs are higher than 24h average. Default 1.15.">?</span>
+            </label>
+            <input type="number" id="inputMultiplier" step="0.05" min="0.5" max="2.5">
+          </div>
+          <div class="form-group">
+            <label for="inputSolarKw">Solar Capacity (kW)</label>
+            <input type="number" id="inputSolarKw" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="inputBatteryKwh">Battery Capacity (kWh)</label>
+            <input type="number" id="inputBatteryKwh" step="0.1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" id="resetConfigBtn">Reset to Repo Defaults</button>
+          <button class="btn btn-primary" id="saveSettingsBtn">Apply Parameters</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="dashboard-footer">
+      <p>Data synced directly from <code>data/history.csv</code> & <code>data/config.json</code> in repository.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
