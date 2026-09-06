@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadI18n() {
   try {
-    const res = await fetch('data/i18n.json');
+    const res = await fetch('data/i18n.json', { cache: 'no-cache' });
     if (res.ok) {
       const json = await res.json();
       i18n = json;
@@ -88,7 +88,7 @@ async function loadI18n() {
 
 async function loadData() {
   try {
-    const configRes = await fetch('data/config.json');
+    const configRes = await fetch('data/config.json', { cache: 'no-cache' });
     if (configRes.ok) {
       const fetchedConfig = await configRes.json();
       appConfig = { ...appConfig, ...fetchedConfig };
@@ -100,7 +100,7 @@ async function loadData() {
   currentLang = appConfig.language || 'en';
 
   try {
-    const historyRes = await fetch('data/history.csv');
+    const historyRes = await fetch('data/history.csv', { cache: 'no-cache' });
     if (historyRes.ok) {
       const csvText = await historyRes.text();
       rawHistoryData = parseCSV(csvText);
