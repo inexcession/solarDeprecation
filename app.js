@@ -323,6 +323,36 @@ function renderHeaderAndMetrics() {
     document.getElementById('projectedBreakEven').textContent = '--';
     document.getElementById('monthlyPace').textContent = t('metricMonthlyPace');
   }
+
+  // Yearly / TTM Self-Consumption Rate (Subsidy requirement tracking)
+  const recentRowsForEnergy = calculatedRows.length > 12 ? calculatedRows.slice(-12) : calculatedRows;
+  const totalGen = recentRowsForEnergy.reduce((sum, r) => sum + r.solarGeneratedKwh, 0);
+  const totalSelf = recentRowsForEnergy.reduce((sum, r) => sum + r.selfConsumedKwh, 0);
+  const selfConsumptionRate = totalGen > 0 ? (totalSelf / totalGen) * 100 : 0;
+
+  const selfRateEl = document.getElementById('selfConsumptionRate');
+  const selfKwhEl = document.getElementById('selfConsumptionKwh');
+  const selfBarEl = document.getElementById('selfConsumptionProgressBar');
+  const selfSubEl = document.getElementById('selfConsumptionSub');
+
+  if (selfRateEl) {
+    selfRateEl.textContent = calculatedRows.length > 0 ? `${selfConsumptionRate.toFixed(1)}%` : '--%';
+  }
+  if (selfKwhEl) {
+    selfKwhEl.textContent = calculatedRows.length > 0 ? `${fmtNumber(totalSelf, 0)} kWh` : '-- kWh';
+  }
+  if (selfBarEl) {
+    selfBarEl.style.width = `${Math.min(100, selfConsumptionRate)}%`;
+  }
+  if (selfSubEl) {
+    if (calculatedRows.length > 0 && selfConsumptionRate >= 30.0) {
+      selfSubEl.textContent = t('metricSubsidyMet');
+      selfSubEl.style.color = 'var(--accent)';
+    } else {
+      selfSubEl.textContent = t('metricSubsidyTarget');
+      selfSubEl.style.color = 'var(--text-dim)';
+    }
+  }
 }
 
 function renderCharts() {
