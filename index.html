@@ -59,6 +59,18 @@
         <div class="metric-value" id="projectedBreakEven">--</div>
         <span class="metric-sub" id="monthlyPace" data-i18n="metricMonthlyPace">Based on active run-rate</span>
       </div>
+
+      <div class="metric-card">
+        <span class="metric-label" data-i18n="metricSelfConsumption">Self-Consumption</span>
+        <div class="metric-value-group">
+          <span class="metric-value" id="selfConsumptionRate">--%</span>
+          <span class="metric-sub" id="selfConsumptionKwh">-- kWh</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="selfConsumptionProgressBar" style="width: 0%;"></div>
+        </div>
+        <span class="metric-sub" id="selfConsumptionSub" style="margin-top: 0.5rem;" data-i18n="metricSubsidyTarget">Target: ≥30% (Subsidy)</span>
+      </div>
     </section>
 
     <!-- Charts Section -->
