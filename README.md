@@ -10,6 +10,7 @@ Calculates ROI and amortization timeline for residential solar installations (wi
 
 - **Self-Consumption Savings:** Uses a historical per-month daytime replacement rate (`assumed_day_rate_jpy`) to calculate monetary savings from avoided daytime grid purchases, avoiding the mathematical distortions of fixed base fees.
 - **Export Revenue:** Direct tracking of periodic utility feed-in deposits.
+- **Self-Consumption Ratio:** Tracks the annual percentage of generated solar energy consumed on-site against subsidy quota requirements (e.g. ≥30%).
 - **Payback & Amortization Tracking:** Shows cumulative return against net initial capital investment.
 
 > **Note for Solar-Only Setups:** If your system does not include a battery, simply set `"batteryCapacityKwh": 0` (or remove the field) in `data/config.json`. The dashboard will automatically adjust the UI and the math handles solar-only self-consumption.
@@ -57,6 +58,12 @@ Average Monthly Value = Average of the Last 12 Recorded Months (TTM)
 Months Remaining = ceil(Remaining Balance / Average Monthly Value)
 Projected Date = Latest Recorded Month + Months Remaining
 ```
+
+### 7. Self-Consumption Rate (%)
+```
+Self-Consumption Rate (%) = (Total Self-Consumed kWh / Total Solar Generated kWh) * 100
+```
+Tracks the percentage of generated solar energy utilized directly on-site versus exported to the grid, ensuring compliance with subsidy thresholds (e.g. ≥30%).
 
 ---
 
