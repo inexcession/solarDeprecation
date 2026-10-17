@@ -8,7 +8,7 @@ A clean, client-side dashboard to track solar system payback, self-consumption s
 
 Calculates ROI and amortization timeline for residential solar installations (with or without batteries) using real electricity bill history and solar generation data.
 
-- **Self-Consumption Savings:** Uses a historical per-month configured replacement rate (`assumed_day_rate_jpy`) to calculate monetary savings from avoided daytime grid purchases, avoiding the mathematical distortions of fixed base fees.
+- **Self-Consumption Savings:** Uses a historical per-month daytime replacement rate (`assumed_day_rate_jpy`) to calculate monetary savings from avoided daytime grid purchases, avoiding the mathematical distortions of fixed base fees.
 - **Export Revenue:** Direct tracking of periodic utility feed-in deposits.
 - **Payback & Amortization Tracking:** Shows cumulative return against net initial capital investment.
 
@@ -34,7 +34,7 @@ Solar energy not exported to the grid is consumed directly by the home or stored
 
 ### 3. Monthly Self-Consumption Savings (¥)
 ```
-Monthly Savings (¥) = Self-Consumed (kWh) * Assumed Day Rate (¥/kWh)
+Monthly Savings (¥) = Self-Consumed (kWh) * Day Rate (¥/kWh)
 ```
 Instead of dividing distorted utility bills by tiny grid imports, each month's self-consumed energy is multiplied by the daytime replacement rate (`assumed_day_rate_jpy`) for that specific month.
 
@@ -72,7 +72,7 @@ If you want to track your own installation, fork or clone this repository to you
 3. **Add Your Data (`data/history.csv`):**
    - Fill in your monthly billing and generation history.
    - Columns: `month,grid_imported_kwh,bill_jpy,solar_generated_kwh,solar_exported_kwh,export_deposit_jpy,assumed_day_rate_jpy`.
-   - *Tip on `assumed_day_rate_jpy`:* This is the price per kWh you would have paid to buy daytime electricity from the grid. Set it to your utility's daytime tier (e.g. `35.0` JPY/kWh) to accurately value your self-consumption without being distorted by fixed monthly base fees.
+   - *Tip on `assumed_day_rate_jpy`:* This is the price per kWh you would have paid to buy daytime electricity from the grid (Daytime energy base rate + monthly fuel cost adjustment + renewable energy surcharge). Tracking the actual daytime tier accurately values your self-consumption without being distorted by fixed monthly base fees.
    - *Note on Utility Billing Periods (e.g., TEPCO):* Power bills often state a month (e.g., "April") when the actual meter reading period was the preceding month (e.g., March 2 to April 1). Align your rows consistently so that your solar generation figures match the corresponding electricity usage period.
 4. **Publish via GitHub Pages:**
    - In your forked repository, go to **Settings** -> **Pages**.
