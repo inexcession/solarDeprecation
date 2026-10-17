@@ -2,3 +2,16 @@
 Thumbs.db
 .vscode/
 .idea/
+
+# Local scraping scripts & environment files
+fetch_solar.py
+.env
+
+# Private utility exports and raw directories
+/*.csv
+*.private.*
+private/
+tepco_raw/
+*tepco*
+
+
