@@ -89,9 +89,57 @@
 
 ---
 
+## 自動データ取得スクリプト (`fetch_solar.py`)
+
+付属のPythonスクリプトを使用することで、各種データソースから毎月の発電・買電・売電実績を自動集約し、[`data/history.csv`](file:///Users/sty/src/solarDeprecation/data/history.csv) に反映できます。
+
+1. **買電量・電気料金 (買電):**
+   - **オクトパスエナジー（2026年11月以降）:** Kraken GraphQL API (`https://api.oejp-kraken.energy/v1/graphql/`) を直接叩き、30分ごとのスマートメーター実績 (`halfHourlyReadings`) を自動集計します。「シンプルオクトパス」の固定単価（31.93円/kWh＋再エネ賦課金、基本料金0円）に基づいて正確に算出されます。
+   - **東京電力 スマートライフプラン（2026年10月以前の過去実績）:** リポジトリ内に配置された東電の利用明細CSVを自動検出し、月ごとの限界昼間単価テーブルを適用します。
+2. **太陽光発電量・CT計測売電電力量:**
+   - ローカルの **VictoriaMetrics** からEP Cube蓄電池/太陽光、Canadian Solarパワコン、およびPanasonic主幹CTクランプの逆潮流電力量を直接クエリします。
+3. **売電収入（非FIT余剰売電）:**
+   - 東電との非FIT余剰電力買取契約（年2回振込）に基づく月次売電明細CSVを自動検出・解析し、月次売電電力量および売電額を反映します。
+
+### 環境変数設定 (`.env`)
+
+`.env.example` をコピーして `.env` を作成します（Git管理外）：
+
+```bash
+cp .env.example .env
+```
+
+オクトパスエナジーのマイページログイン用メールアドレス・パスワード・お客様番号（`A-XXXXXXXX`）を設定します：
+
+```env
+OCTOPUS_EMAIL="your-email@example.com"
+OCTOPUS_PASSWORD="your-octopus-password"
+OCTOPUS_ACCOUNT_NUMBER="A-XXXXXXXX"
+OCTOPUS_SWITCH_MONTH="2026-11"
+OCTOPUS_BASE_RATE=31.93
+RENEWABLE_SURCHARGE=3.49
+VM_HOST="http://192.168.0.250:8428"
+```
+
+### スクリプトの実行方法
+
+```bash
+# 1. 前月分のデータを取得（標準的な月1回の実行）
+python3 fetch_solar.py
+
+# 2. 特定の月（締め月、または当月の月初来・MTD）を取得
+python3 fetch_solar.py 2026-11
+
+# 3. 取得結果を data/history.csv に直接上書き・追記
+python3 fetch_solar.py 2026-11 --append
+```
+
+---
+
 ## ディレクトリ構成
 
-- `data/config.json`: 設備仕様、初期費用、補助金、言語設定。
+- `data/config.json`: 設備仕様、初期費用、補助金、電力会社・プラン情報、言語設定。
 - `data/history.csv`: 月次の買電・請求額・発電・売電・売電振込・想定昼間単価データ。
 - `data/i18n.json`: 日本語および英語の文言辞書。
+- `fetch_solar.py`: オクトパスGraphQL API、VictoriaMetrics、東電売電CSVを統合する自動取得スクリプト。
 - `index.html`, `style.css`, `app.js`: ダッシュボード本体（Webアプリケーション）。

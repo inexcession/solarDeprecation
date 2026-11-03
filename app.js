@@ -14,7 +14,9 @@ let appConfig = {
   batteryCapacityKwh: 13.0,
   inverterCapacityKw: 9.9,
   systemName: '',
-  defaultDayRate: 35.0,
+  electricityProvider: '',
+  tariffPlan: '',
+  defaultDayRate: 35.42,
   maxGenMultiplier: 220,
   highRateThreshold: 80,
   lowRateThreshold: 15
@@ -275,7 +277,8 @@ function renderHeaderAndMetrics() {
   const solarPart = appConfig.solarCapacityKw ? `${appConfig.solarCapacityKw} ${t('solarUnit')}` : '';
   const batteryPart = appConfig.batteryCapacityKwh ? ` · ${appConfig.batteryCapacityKwh} ${t('batteryUnit')}` : '';
   const inverterPart = appConfig.inverterCapacityKw ? ` · ${appConfig.inverterCapacityKw} ${t('inverterUnit')}` : '';
-  document.getElementById('systemSpecs').textContent = `${solarPart}${batteryPart}${inverterPart}`.trim() || '--';
+  const providerPart = appConfig.tariffPlan ? ` · ${appConfig.tariffPlan}` : (appConfig.electricityProvider ? ` · ${appConfig.electricityProvider}` : '');
+  document.getElementById('systemSpecs').textContent = `${solarPart}${batteryPart}${inverterPart}${providerPart}`.trim() || '--';
 
   document.getElementById('paybackPercent').textContent = `${paybackPercent.toFixed(1)}%`;
   document.getElementById('paybackRemaining').textContent = remaining > 0 ? `${fmtCurrency(remaining)} ${t('metricRemaining')}` : t('metricFullyAmortized');
