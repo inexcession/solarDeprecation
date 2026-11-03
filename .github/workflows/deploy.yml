@@ -31,10 +31,12 @@ jobs:
       - name: Run Fetcher Tests
         env:
           PYTHONPATH: .
-        run: python3 tests/test_fetcher.py -v
+        run: |
+          python3 tests/test_fetcher.py -v 2>&1 | tee test_fetcher.log || (echo "### Fetcher Test Failure" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat test_fetcher.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; exit 1)
 
       - name: Run JS Model Tests
-        run: node tests/model.test.mjs
+        run: |
+          node tests/model.test.mjs 2>&1 | tee test_js.log || (echo "### JS Test Failure" >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; cat test_js.log >> $GITHUB_STEP_SUMMARY; echo '```' >> $GITHUB_STEP_SUMMARY; exit 1)
 
   deploy:
     needs: test
