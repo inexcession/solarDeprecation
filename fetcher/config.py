@@ -38,6 +38,14 @@ def load_dotenv(path: Path) -> None:
             os.environ.setdefault(key.strip(), value.strip().strip("'\""))
 
 
+def get_timezone(name: str):
+    try:
+        return ZoneInfo(name)
+    except Exception:
+        from datetime import timezone, timedelta
+        return timezone(timedelta(hours=9), name="JST")
+
+
 def load() -> Settings:
     load_dotenv(ROOT / ".env")
     cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))["fetcher"]
@@ -57,7 +65,7 @@ def load() -> Settings:
         raise FetchError(f"missing settings in .env: {', '.join(missing)}")
 
     return Settings(
-        tz=ZoneInfo(cfg["timezone"]),
+        tz=get_timezone(cfg.get("timezone", "Asia/Tokyo")),
         octopus_start_month=cfg["octopusStartMonth"],
         octopus_day_rate=round(cfg["octopusFixedRateJpy"] + cfg["renewableSurchargeJpy"], 2),
         vm_host=env["VM_HOST"].rstrip("/"),

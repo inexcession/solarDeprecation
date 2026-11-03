@@ -15,7 +15,14 @@ from fetcher.history import HistoryRecord, read_history, upsert_history
 from fetcher.tepco import parse_export_csv, tepco_billing_month
 from fetcher.window import month_window, previous_month
 
-JST = ZoneInfo("Asia/Tokyo")
+def get_tz(name="Asia/Tokyo"):
+    try:
+        return ZoneInfo(name)
+    except Exception:
+        from datetime import timedelta, timezone
+        return timezone(timedelta(hours=9), name="JST")
+
+JST = get_tz("Asia/Tokyo")
 
 
 class WindowTests(unittest.TestCase):
