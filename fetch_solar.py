@@ -182,11 +182,6 @@ class OctopusClient:
         query GetConsumption($accountNumber: String!, $from: DateTime, $to: DateTime) {
           account(accountNumber: $accountNumber) {
             number
-            bills {
-              id
-              statementDate
-              amount
-            }
             properties {
               electricitySupplyPoints {
                 halfHourlyReadings(fromDatetime: $from, toDatetime: $to) {
