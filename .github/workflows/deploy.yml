@@ -29,6 +29,8 @@ jobs:
           python-version: "3.11"
 
       - name: Run Fetcher Tests
+        env:
+          PYTHONPATH: .
         run: python3 -m unittest discover -s tests -p "test_*.py" -v
 
       - name: Run JS Model Tests

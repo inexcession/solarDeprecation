@@ -98,10 +98,16 @@ test('ledgerToCsv emits one line per month', () => {
   eq(csv.split('\n')[1], '2026-01,3000,100,30.00,10,6.0,180,0,180,180');
 });
 
-if (typeof read === 'function') {
+let fileReader = globalThis.read;
+if (typeof fileReader !== 'function') {
+  const fs = await import('node:fs').catch(() => null);
+  if (fs) fileReader = (p) => fs.readFileSync(p, 'utf8');
+}
+
+if (typeof fileReader === 'function') {
   test('the real web/data files are valid', () => {
-    const config = JSON.parse(read('web/data/config.json'));
-    const ledger = computeLedger(parseHistory(read('web/data/history.csv')), config);
+    const config = JSON.parse(fileReader('web/data/config.json'));
+    const ledger = computeLedger(parseHistory(fileReader('web/data/history.csv')), config);
     if (!ledger.length) throw new Error('history.csv is empty');
     summarize(ledger, config);
   });

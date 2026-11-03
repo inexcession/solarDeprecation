@@ -1,11 +1,15 @@
 """Unit tests for the fetcher package."""
 
 import csv
+import sys
 import tempfile
 import unittest
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
+
+# Ensure repository root is on sys.path regardless of working directory
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from fetcher.history import HistoryRecord, read_history, upsert_history
 from fetcher.tepco import parse_export_csv, tepco_billing_month
