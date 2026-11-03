@@ -1,0 +1,26 @@
+{
+  "language": "en",
+  "currency": "¥",
+  "systemName": "",
+  "systemCost": 4300000,
+  "subsidyReceived": 2106000,
+  "solarCapacityKw": 15.0,
+  "batteryCapacityKwh": 13.0,
+  "inverterCapacityKw": 9.9,
+  "electricityProvider": "Octopus Energy Japan",
+  "tariffPlan": "Simple Octopus",
+  "selfConsumptionTargetPercent": 30,
+  "sanityChecks": {
+    "maxMonthlyKwhPerKw": 220,
+    "minImpliedRate": 15,
+    "maxImpliedRate": 80,
+    "minDayRate": 10,
+    "maxDayRate": 120
+  },
+  "fetcher": {
+    "timezone": "Asia/Tokyo",
+    "octopusStartMonth": "2026-11",
+    "octopusFixedRateJpy": 31.93,
+    "renewableSurchargeJpy": 3.49
+  }
+}

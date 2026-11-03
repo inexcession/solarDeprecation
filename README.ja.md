@@ -13,7 +13,7 @@
 - **自家消費率のモニタリング:** 発電した太陽光エネルギーの自家消費率（%）を追跡し、自治体等の補助金交付要件（30%以上の自家消費基準など）の達成状況を可視化。
 - **投資回収・償却進捗:** 実質初期費用（設備費用 − 補助金）に対する累積経済効果の進捗率（%）と損益分岐時期の予測を表示。
 
-> **太陽光発電のみ（蓄電池なし）の場合:** 蓄電池を設置していない場合は、`data/config.json` の `"batteryCapacityKwh"` を `0`（または項目削除）に設定してください。UIが自動で最適化され、太陽光単体の自家消費効果が正しく計算されます。
+> **太陽光発電のみ（蓄電池なし）の場合:** 蓄電池を設置していない場合は、`web/data/config.json` の `"batteryCapacityKwh"` を `0` に設定してください。UIと表示項目が自動で太陽光単体向けに最適化されます。
 
 ---
 
@@ -69,37 +69,36 @@
 
 ## ご自身の太陽光設備で利用する場合（Fork手順）
 
-本ツールをご自身の設備実績で利用したい場合は、本リポジトリに直接データを追加するのではなく、ご自身のアカウントへ **Fork（複製）** してご利用ください。
+本ツールをご自身の設備実績で利用したい場合は、本リポジトリをご自身のアカウントへ **Fork（複製）** してご利用ください。
 
-1. **リポジトリを Fork:** 画面右上の **Fork** ボタンをクリックし、ご自身の GitHub アカウントにリポジトリを複製します。
-2. **設定ファイルの編集 (`data/config.json`):**
-   - 設備総費用、受給補助金額、実質投資額を入力します。
+1. **リポジトリを Fork:** 画面右上の **Fork** ボタンをクリックし、ご自身のアカウントにリポジトリを複製します。
+2. **設定ファイルの編集 (`web/data/config.json`):**
+   - 設備総費用、受給補助金額を入力します。
    - 設備容量（`solarCapacityKw`, `batteryCapacityKwh`, `inverterCapacityKw`）を入力します。
-   - 表示言語（`"ja"` または `"en"`）を選択します。
-3. **実績データの入力 (`data/history.csv`):**
+   - 表示言語（`"ja"` または `"en"`）や電力会社情報を入力します。
+3. **実績データの入力 (`web/data/history.csv`):**
    - 毎月の買電量・電気料金請求額・発電量・売電量・売電振込額を入力します。
    - カラム構成: `month,grid_imported_kwh,bill_jpy,solar_generated_kwh,solar_exported_kwh,export_deposit_jpy,assumed_day_rate_jpy`
-   - *※ `assumed_day_rate_jpy` について:* 太陽光発電がなかった場合に電力会社から買電していたであろう昼間の電気料金単価（基本昼間単価＋毎月の燃料費調整単価＋再エネ賦課金。例: スマートライフプランでは `29.0`〜`32.8` 円/kWh程度）を設定します。これにより基本料金の歪みを受けずに自家消費の経済効果を正確に算出できます。
-   - *※電力会社（TEPCO等）の検針期間に関する注意:* 「4月分請求」と記載されていても実際の検針期間は「3月2日〜4月1日」のように前月期間であることが一般的です。太陽光発電実績データとの対応関係（検針期間に合わせるかカレンダー月に合わせるか）を統一してご入力ください。
+   - *※ `assumed_day_rate_jpy` について:* 太陽光発電がなかった場合に電力会社から買電していたであろう昼間の電気料金単価（基本昼間単価＋毎月の燃料費調整単価＋再エネ賦課金）を設定します。
 4. **GitHub Pages で公開:**
-   - 複製したご自身のリポジトリの **Settings** -> **Pages** を開きます。
-   - **Build and deployment > Source** で **Deploy from a branch** を選択します。
-   - ブランチに `main`、フォルダに `/ (root)` を指定して **Save** をクリックします。
+   - リポジトリの **Settings** -> **Pages** を開きます。
+   - **Build and deployment > Source** で **GitHub Actions** を選択します。
+   - `main` ブランチへ push すると、自動的にテストが実行され `web/` ディレクトリのみが安全に公開されます。
    - `https://<ご自身のアカウント名>.github.io/<リポジトリ名>/` にて専用のダッシュボードが公開されます。
 
 ---
 
 ## 自動データ取得スクリプト (`fetch_solar.py`)
 
-付属のPythonスクリプトを使用することで、各種データソースから毎月の発電・買電・売電実績を自動集約し、[`data/history.csv`](file:///Users/sty/src/solarDeprecation/data/history.csv) に反映できます。
+付属のPythonスクリプトを使用することで、各種データソースから毎月の実績を自動集約し、`web/data/history.csv` に反映できます。
 
 1. **買電量・電気料金 (買電):**
-   - **オクトパスエナジー（2026年11月以降）:** Kraken GraphQL API (`https://api.oejp-kraken.energy/v1/graphql/`) を直接叩き、30分ごとのスマートメーター実績 (`halfHourlyReadings`) を自動集計します。「シンプルオクトパス」の固定単価（31.93円/kWh＋再エネ賦課金、基本料金0円）に基づいて正確に算出されます。
-   - **東京電力 スマートライフプラン（2026年10月以前の過去実績）:** リポジトリ内に配置された東電の利用明細CSVを自動検出し、月ごとの限界昼間単価テーブルを適用します。
+   - **オクトパスエナジー（2026年11月以降）:** Kraken GraphQL API (`https://api.oejp-kraken.energy/v1/graphql/`) を叩き、30分ごとのスマートメーター実績 (`halfHourlyReadings`) を自動集約します。
+   - **過去実績:** `--grid-import` および `--bill` 引数で指定可能です。
 2. **太陽光発電量・CT計測売電電力量:**
-   - ローカルの **VictoriaMetrics** からEP Cube蓄電池/太陽光、Canadian Solarパワコン、およびPanasonic主幹CTクランプの逆潮流電力量を直接クエリします。
+   - ローカルの **VictoriaMetrics** からEP Cube蓄電池/太陽光、Canadian Solarパワコン、およびPanasonic主幹CTクランプの逆潮流電力量を日本時間（JST）の月境界で直接クエリします。
 3. **売電収入（非FIT余剰売電）:**
-   - 東電との非FIT余剰電力買取契約（年2回振込）に基づく月次売電明細CSVを自動検出・解析し、月次売電電力量および売電額を反映します。
+   - `--tepco-export <ファイルパス>` で東京電力の月次売電明細CSVを指定すると、売電電力量および売電額を自動解析して取り込みます。
 
 ### 環境変数設定 (`.env`)
 
@@ -109,37 +108,51 @@
 cp .env.example .env
 ```
 
-オクトパスエナジーのマイページログイン用メールアドレス・パスワード・お客様番号（`A-XXXXXXXX`）を設定します：
+認証情報および VictoriaMetrics エンドポイントを設定します：
 
 ```env
 OCTOPUS_EMAIL="your-email@example.com"
 OCTOPUS_PASSWORD="your-octopus-password"
 OCTOPUS_ACCOUNT_NUMBER="A-XXXXXXXX"
-OCTOPUS_SWITCH_MONTH="2026-11"
-OCTOPUS_BASE_RATE=31.93
-RENEWABLE_SURCHARGE=3.49
 VM_HOST="http://192.168.0.250:8428"
 ```
 
 ### スクリプトの実行方法
 
 ```bash
-# 1. 前月分のデータを取得（標準的な月1回の実行）
+# 1. 前月分のデータを取得（ドライラン・プレビュー表示）
 python3 fetch_solar.py
 
 # 2. 特定の月（締め月、または当月の月初来・MTD）を取得
 python3 fetch_solar.py 2026-11
 
-# 3. 取得結果を data/history.csv に直接上書き・追記
+# 3. 取得結果を web/data/history.csv に直接上書き・追記
 python3 fetch_solar.py 2026-11 --append
+
+# 4. 東電売電明細CSVファイルを指定して取り込み
+python3 fetch_solar.py 2026-10 --append --tepco-export path/to/tepco_export.csv
+```
+
+### テストの実行
+
+```bash
+# Python取得スクリプトの単体テスト実行
+python3 -m unittest discover -s tests -p "test_*.py"
+
+# フロントエンドの計算モデルテスト実行 (macOS標準jsc または Node.js)
+/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc -m tests/model.test.mjs
 ```
 
 ---
 
 ## ディレクトリ構成
 
-- `data/config.json`: 設備仕様、初期費用、補助金、電力会社・プラン情報、言語設定。
-- `data/history.csv`: 月次の買電・請求額・発電・売電・売電振込・想定昼間単価データ。
-- `data/i18n.json`: 日本語および英語の文言辞書。
-- `fetch_solar.py`: オクトパスGraphQL API、VictoriaMetrics、東電売電CSVを統合する自動取得スクリプト。
-- `index.html`, `style.css`, `app.js`: ダッシュボード本体（Webアプリケーション）。
+- `web/`: フロントエンド本体（GitHub Pagesで公開される唯一のディレクトリ）。
+  - `web/index.html`: セマンティックなHTML構造。
+  - `web/style.css`: ダークテーマCSS。
+  - `web/js/`: ESモジュール（`main.js`, `model.js`, `view.js`, `charts.js`, `i18n.js`）。
+  - `web/data/`: `config.json`, `history.csv`, `i18n.json`。
+- `fetcher/`: データ取得用Pythonパッケージ（`config`, `window`, `vm`, `octopus`, `tepco`, `history`）。
+- `fetch_solar.py`: fetcherパッケージを呼び出す薄いCLIエントリーポイント。
+- `tests/`: 自動テスト群（計算ロジック、日付ウィンドウ、CSVパース）。
+- `.github/workflows/deploy.yml`: テスト実行およびPages自動デプロイワークフロー。

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="pageTitle">Solar Depreciation &amp; Payback Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.6.1/dist/chart.umd.min.js"
+          integrity="sha384-Emf5ZVIUiarAdhkgtqK+5/Z5qIvM6QoVrS+qAVtfyZVuD5lIHrac0me485+Antp0"
+          crossorigin="anonymous"></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <div class="load-error" id="loadError" role="alert" hidden></div>
+
+    <header class="dashboard-header">
+      <div class="title-group">
+        <span class="system-badge" id="systemName"></span>
+        <h1 data-i18n="mainTitle">Investment Amortization &amp; ROI</h1>
+        <p class="subtitle" id="systemSpecs"></p>
+      </div>
+      <div class="lang-switch-group">
+        <button class="lang-btn" data-lang="en" aria-label="Switch to English">EN</button>
+        <span class="lang-divider">/</span>
+        <button class="lang-btn" data-lang="ja" aria-label="日本語に切り替え">日本語</button>
+      </div>
+    </header>
+
+    <section class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-label" data-i18n="metricPaybackProgress">Payback Progress</span>
+        <div class="metric-value-group">
+          <span class="metric-value" id="paybackPercent">--%</span>
+          <span class="metric-sub" id="paybackRemaining"></span>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="paybackProgressBar"></div></div>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label" data-i18n="metricCumulativeReturn">Cumulative Total Return</span>
+        <div class="metric-value" id="cumulativeReturn">--</div>
+        <span class="metric-sub" data-i18n="metricCumulativeBreakdown">Self-consumption + Export deposits</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label" data-i18n="metricNetCost">Net System Cost</span>
+        <div class="metric-value" id="netInvestmentDisplay">--</div>
+        <span class="metric-sub" data-i18n="metricNetCostBreakdown">Gross cost minus subsidies</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label" id="breakEvenCardLabel">Projected Break-Even</span>
+        <div class="metric-value" id="projectedBreakEven">--</div>
+        <span class="metric-sub" id="monthlyPace"></span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label" data-i18n="metricSelfConsumption">Self-Consumption</span>
+        <div class="metric-value-group">
+          <span class="metric-value" id="selfConsumptionRate">--%</span>
+          <span class="metric-sub" id="selfConsumptionKwh"></span>
+        </div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="selfConsumptionProgressBar"></div></div>
+        <span class="metric-sub metric-footnote" id="selfConsumptionSub"></span>
+      </div>
+    </section>
+
+    <section class="charts-grid">
+      <div class="panel full-width">
+        <h2 data-i18n="chartAmortizationTitle">Cumulative Amortization Timeline</h2>
+        <p class="panel-subtitle" data-i18n="chartAmortizationSubtitle"></p>
+        <div class="chart-wrapper"><canvas id="amortizationChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <h2 data-i18n="chartMonthlyTitle">Monthly Financial Offset</h2>
+        <p class="panel-subtitle" data-i18n="chartMonthlySubtitle"></p>
+        <div class="chart-wrapper"><canvas id="monthlyValueChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <h2 data-i18n="chartEnergyTitle">Energy Generation &amp; Self-Consumption</h2>
+        <p class="panel-subtitle" data-i18n="chartEnergySubtitle"></p>
+        <div class="chart-wrapper"><canvas id="energyFlowChart"></canvas></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h2 data-i18n="tableTitle">Monthly Ledger</h2>
+          <p class="panel-subtitle" data-i18n="tableSubtitle"></p>
+        </div>
+        <button class="btn" id="exportCalculationsBtn" data-i18n="btnExportCSV">Export Calculated CSV</button>
+      </div>
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col" data-i18n="thMonth">Month</th>
+              <th scope="col" data-i18n="thGridBill">Grid Bill</th>
+              <th scope="col" data-i18n="thGridImport">Grid Import</th>
+              <th scope="col" data-i18n="thDaytimeRate">Day Rate</th>
+              <th scope="col" data-i18n="thSolarGen">Solar Gen</th>
+              <th scope="col" data-i18n="thSelfConsumed">Self-Consumed</th>
+              <th scope="col" data-i18n="thSavings">Savings</th>
+              <th scope="col" data-i18n="thExportRevenue">Export Revenue</th>
+              <th scope="col" data-i18n="thTotalValue">Total Value</th>
+              <th scope="col" data-i18n="thCumulative">Cumulative</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="dashboard-footer" data-i18n="footerText"></footer>
+  </div>
+</body>
+</html>
