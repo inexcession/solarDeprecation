@@ -3,9 +3,9 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Local scraping scripts & environment files
-fetch_solar.py
+# Environment & secrets
 .env
+
 
 # Private utility exports and raw directories
 /*.csv

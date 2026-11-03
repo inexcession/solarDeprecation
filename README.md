@@ -89,9 +89,57 @@ If you want to track your own installation, fork or clone this repository to you
 
 ---
 
+## Automated Data Fetching (`fetch_solar.py`)
+
+A built-in Python script automates populating [`data/history.csv`](file:///Users/sty/src/solarDeprecation/data/history.csv) by pulling from multiple data sources:
+
+1. **Grid Import & Bills (買電):**
+   - **Octopus Energy Japan (from 2026-11 onwards):** Automatically queries the Kraken GraphQL API (`https://api.oejp-kraken.energy/v1/graphql/`) for 30-minute interval smart meter readings (`halfHourlyReadings`). Uses the **Simple Octopus** 24/7 flat rate (¥31.93/kWh + Renewable Surcharge) with ¥0 base fee.
+   - **TEPCO Smart Life Plan (historical < 2026-11):** Automatically parses local TEPCO Usage CSVs and uses historical marginal day rates.
+2. **Solar Generation & CT Clamp Export:**
+   - Queries local **VictoriaMetrics** for EP Cube battery/solar, Canadian Solar inverter generation, and Panasonic main breaker CT export.
+3. **Surplus Export Revenue (売電 / Non-FIT Sales):**
+   - Automatically detects and parses monthly **TEPCO Export CSVs** for non-FIT surplus solar energy sold to TEPCO (paid biannually).
+
+### Configuration (`.env`)
+
+Copy `.env.example` to `.env` (kept local and ignored by Git):
+
+```bash
+cp .env.example .env
+```
+
+Set your Octopus Energy portal email, password, and account number (`A-XXXXXXXX`):
+
+```env
+OCTOPUS_EMAIL="your-email@example.com"
+OCTOPUS_PASSWORD="your-octopus-password"
+OCTOPUS_ACCOUNT_NUMBER="A-XXXXXXXX"
+OCTOPUS_SWITCH_MONTH="2026-11"
+OCTOPUS_BASE_RATE=31.93
+RENEWABLE_SURCHARGE=3.49
+VM_HOST="http://192.168.0.250:8428"
+```
+
+### Running the Fetcher
+
+```bash
+# 1. Fetch previous calendar month (default monthly cadence)
+python3 fetch_solar.py
+
+# 2. Fetch specific month (closed month or mid-month Month-To-Date)
+python3 fetch_solar.py 2026-11
+
+# 3. Fetch and append/update data/history.csv in-place
+python3 fetch_solar.py 2026-11 --append
+```
+
+---
+
 ## Repository Structure
 
-- `data/config.json`: System specifications, initial costs, subsidies, and language setting.
+- `data/config.json`: System specifications, initial costs, subsidies, provider info, and language setting.
 - `data/history.csv`: Monthly ledger containing grid import, bills, solar generation, export kWh, export deposits, and daytime rates.
 - `data/i18n.json`: String definitions for English and Japanese translations.
+- `fetch_solar.py`: Automated fetcher combining Octopus GraphQL API, VictoriaMetrics, and TEPCO export CSVs.
 - `index.html`, `style.css`, `app.js`: Client-side dashboard application.
