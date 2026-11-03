@@ -8,5 +8,10 @@
   "solarCapacityKw": 15.0,
   "batteryCapacityKwh": 13.0,
   "inverterCapacityKw": 9.9,
-  "systemName": ""
+  "systemName": "",
+  "electricityProvider": "Octopus Energy Japan",
+  "tariffPlan": "Simple Octopus",
+  "switchMonth": "2026-11",
+  "fixedRateJpy": 31.93,
+  "renewableSurchargeJpy": 3.49
 }
